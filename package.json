@@ -1,0 +1,25 @@
+{
+  "name": "twitch-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "core.js",
+  "scripts": {
+    "test": "node core"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/Quaint-Studios/twitch-bot.git"
+  },
+  "author": "Kristopher Ali",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/Quaint-Studios/twitch-bot/issues"
+  },
+  "homepage": "https://gitlab.com/Quaint-Studios/twitch-bot#README",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "fs": "0.0.1-security",
+    "mkdirp": "^0.5.1",
+    "path": "^0.12.7"
+  }
+}
