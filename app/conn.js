@@ -1,15 +1,15 @@
 // Discord variables
-const Discord = require("discord.js");
-const client = new Discord.Client();
+const Discord    = require("discord.js")
+    , client     = new Discord.Client();
 
 // External files
-var auth = require.main.require("./app/auth/auth.js");
-var bot = require.main.require("./app/bot.js");
+var auth         = require.main.require("./app/auth/auth.js")
+  , bot          = require.main.require("./app/bot.js");
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.username}!`);
     
-    client.user.setActivity('twitch.tv/em_ee', { type: 'STREAMING', url: 'https://twitch.tv/em_ee'});
+    client.user.setActivity('twitch.tv/QuaintShanty', { type: 'STREAMING', url: 'https://twitch.tv/quaintshanty'});
 });
 
 // Refreshes listeners
@@ -20,7 +20,7 @@ function listen() {
             msg.reply('Pong!');
         }
 
-        //bot.handle(msg);
+        bot.handle(msg);
     });
 }
 

@@ -1,10 +1,12 @@
 /////
 // External Reference Variables
 /////
-const fs = require("fs");
-const essentials = require.main.require("./app/utils/essentials.js");
+const fs         = require("fs")
+    , essentials = require.main.require("./app/utils/essentials.js");
 
-const conn    = require.main.require("./app/conn.js");
+const conn       = require.main.require("./app/conn.js")
+    , bot        = require.main.require("./app/bot.js")
+    , streams    = require.main.require("./app/bot/streams.js");
 
 /////
 // Variables
@@ -39,6 +41,8 @@ function load() {
         // If conn is loaded, then the rest should surely be loaded.
         if(conn.onLoad) {
             conn.onLoad();
+            //bot.onLoad();
+            streams.onLoad();
             clearInterval(interval);
         }
     }, 10);

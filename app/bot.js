@@ -3,7 +3,9 @@
 ////
 var essentials    = require.main.require("./app/utils/essentials.js")
   , conn          = require.main.require("./app/conn.js")
-  , storage       = require.main.require("./app/storage.js");
+  , storage       = require.main.require("./app/storage.js")
+
+  , streams       = require.main.require("./app/bot/streams.js");
 
 var cmdTrigger = ["!", ".", "?"];
 
@@ -29,6 +31,11 @@ function handleCommand(msg) {
     }
     
     switch(command) {
+
+        case "streams":
+            streams.handle(msg, command, params);
+            break;
+        
         default:
             break;
     }
