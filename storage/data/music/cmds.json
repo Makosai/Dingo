@@ -1,0 +1,38 @@
+{
+	"trigger": "music",
+
+	"data": {
+		"help": {
+			"description": "Runs the help command for the music portion of the bot.",
+			"example": "help",
+			"categories": null,
+			"channels": null,
+			"roles": null,
+			"show": false
+    },
+    "join": {
+			"description": "Tells the bot to join a voice channel.",
+			"example": "join <voice channel>",
+			"categories": null,
+			"channels": null,
+			"roles": null,
+			"show": true
+    },
+    "leave": {
+			"description": "Tells the bot to leave the voice channel it's currently in.",
+			"example": "leave",
+			"categories": null,
+			"channels": null,
+			"roles": null,
+			"show": true
+    },
+    "play": {
+      "description": "Plays music in the current voice channel for this server.",
+			"example": "play <youtube URL>",
+			"categories": null,
+			"channels": null,
+			"roles": null,
+			"show": true
+    }
+	}
+}
