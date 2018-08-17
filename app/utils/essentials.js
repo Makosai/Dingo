@@ -1,5 +1,5 @@
 // Essential variables
-const fs = require("fs");
+const fs = require('fs');
 const mkdirp = require('mkdirp');
 const path = require('path');
 
@@ -11,17 +11,15 @@ const path = require('path');
 * *     "end": "The index to end at (default: this.length - 1)."
 * * }
 * */
-Array.prototype.seperate = function(seperator, start, end) {
-	if(!start)
-		start = 0;
+Array.prototype.seperate = function (seperator, start, end) {
+  if (!start) { start = 0; }
 
-	if(!end)
-		end = this.length - 1;
+  if (!end) { end = this.length - 1; }
 
-	end++;
-  
+  end++;
+
   return this.slice(start, end).join(seperator);
-}
+};
 
 /* *
 * * Converts a string of text to parameters by seperating it via quotations, apostrophes, or spaces.
@@ -29,16 +27,22 @@ Array.prototype.seperate = function(seperator, start, end) {
 * *     "string": "The string to convert to a param."
 * * }
 * */
-String.prototype.toParams = function(string) {
-    let PARAM_REGEX = /[^\s"']+|"([^"]*)"|'([^']*)'/g;
-	let match = null;
-	let parts = [];
+String.prototype.toParams = function (string) {
+  const PARAM_REGEX = /[^\s"']+|"([^"]*)"|'([^']*)'/g;
+  let match = null;
+  const parts = [];
 
-	while(match = PARAM_REGEX.exec(string)) {
-		parts.push(match[1] || match[2] || match[0]);
-	}
-	
-	return parts;
+  while (match = PARAM_REGEX.exec(string)) {
+    parts.push(match[1] || match[2] || match[0]);
+  }
+
+  return parts;
+};
+
+function writeFile(fileName, defaultData, callback) {
+  fs.writeFile(fileName, defaultData, { flag: 'wx' }, (err, data) => {
+    if (callback) { callback(); }
+  });
 }
 
 /* *
@@ -49,74 +53,62 @@ String.prototype.toParams = function(string) {
 * *     "callback": "The function to callback to."
 * * }
 * */
-function checkForFile(fileName, defaultData, callback)
-{
-    fs.exists(fileName, function (exists) {
-        if(exists) {
-            callback();
-        } else {
-            mkdirp(path.dirname(fileName), function(err) {
-                if(err)
-                    return;
-                
-                writeFile(fileName, defaultData, callback);
-            });            
-        }
-    });
-}
+function checkForFile(fileName, defaultData, callback) {
+  fs.exists(fileName, (exists) => {
+    if (exists) {
+      callback();
+    } else {
+      mkdirp(path.dirname(fileName), (err) => {
+        if (err) { return; }
 
-function writeFile(fileName, defaultData, callback) {
-    fs.writeFile(fileName, defaultData, {flag: 'wx'}, function (err, data) 
-    { 
-        if(callback)
-            callback();
-    });
+        writeFile(fileName, defaultData, callback);
+      });
+    }
+  });
 }
 
 function writeFileSync(fileName, defaultData, callback) {
-    fs.writeFileSync(fileName, defaultData);
-    
-    if(callback)
-        callback();
+  fs.writeFileSync(fileName, defaultData);
+
+  if (callback) { callback(); }
 }
 
 function exists(check) {
-    if(typeof check == "undefined" || check == null) {
-        return false;
-    } else {
-        return true;
-    }
+  if (typeof check === 'undefined' || check == null) {
+    return false;
+  }
+  return true;
 }
 
 // Thanks to https://stackoverflow.com/a/19259270
 function compareStrings(a, b, sensitive) {
-    if(!sensitive) {
-        // if you want case-insensitive comparison
-        a = a.toLowerCase();
-        b = b.toLowerCase();
-    }
+  if (!sensitive) {
+    // if you want case-insensitive comparison
+    a = a.toLowerCase();
+    b = b.toLowerCase();
+  }
 
-    return (a < b) ? -1 : (a > b) ? 1 : 0;
+  return (a < b) ? -1 : (a > b) ? 1 : 0;
 }
 
 // Adds extra spaces until a certain length is reached.
 function fillSpaces(compare, length) {
-    var string = "";
-    for(;string.length + compare.length < length;) {
-        string += " ";
-    }
-    
-    
-    return string;
+  let string = '';
+  for (;string.length + compare.length < length;) {
+    string += ' ';
+  }
+
+
+  return string;
 }
 
 // Thanks to https://stackoverflow.com/a/27434991
-function isIP(ipaddress) {  
-    if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {  
+function isIP(ipaddress) {
+  if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress)) {
     return true;
-    } 
-    return false; 
-}  
+  }
+  return false;
+}
 
 // Exports
 module.exports.fs = fs;
