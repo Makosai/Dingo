@@ -4,7 +4,7 @@
   "description": "",
   "main": "core.js",
   "scripts": {
-    "test": "node core"
+    "start": "node core"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "fs": "0.0.1-security",
     "mkdirp": "^0.5.1",
     "path": "^0.12.7",
-    "tmi.js": "^1.2.1"
+    "tmi.js": "^1.2.1",
+    "ytdl-core": "^0.24.0"
   }
 }
