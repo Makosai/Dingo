@@ -33,6 +33,14 @@
 			"channels": null,
 			"roles": null,
 			"show": true
+    },
+    "stop": {
+      "description": "Stops the music in the current voice channel for this server.",
+			"example": "stop",
+			"categories": null,
+			"channels": null,
+			"roles": null,
+			"show": true
     }
 	}
 }

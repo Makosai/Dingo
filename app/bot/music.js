@@ -19,6 +19,15 @@ function isInVoice(msg) {
   return true;
 }
 
+function isStreaming(msg) {
+  if (!exists(msg.guild.voiceConnection.dispatcher)) {
+    msg.channel.send('Sorry, I\'m not currently playing anything.');
+    return false;
+  }
+
+  return true;
+}
+
 /**
  * Finds and joins a channel that closely matches the name.
  * @param {*} msg The message that triggered this command.
@@ -56,7 +65,15 @@ function playSong(msg, song) {
   ytdl.getInfo(song, (err, info) => {
     msg.channel.send(`Now playing **${info.title}**.`);
   });
-  
+}
+
+function stopSong(msg) {
+  if (!isInVoice(msg) || !isStreaming(msg)) {
+    return;
+  }
+
+  msg.guild.voiceConnection.dispatcher.end();
+  msg.channel.send('The song has been stopped.');
 }
 
 function handle(msg, command, params) {
@@ -110,6 +127,12 @@ ${helpText}\`\`\``);
     case 'play':
       if (compareChans(msg, cmds.data[param]) && compareRoles(msg, cmds.data[param].roles)) {
         playSong(msg, additions[0]);
+      }
+      break;
+
+    case 'stop':
+      if (compareChans(msg, cmds.data[param]) && compareRoles(msg, cmds.data[param].roles)) {
+        stopSong(msg);
       }
       break;
 
