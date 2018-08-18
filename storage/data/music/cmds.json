@@ -41,6 +41,22 @@
 			"channels": null,
 			"roles": null,
 			"show": true
+    },
+    "pause": {
+      "description": "Pauses the music in the current voice channel for this server.",
+			"example": "pause",
+			"categories": null,
+			"channels": null,
+			"roles": null,
+			"show": true
+    },
+    "resume": {
+      "description": "Resumes the music in the current voice channel for this server.",
+			"example": "resume",
+			"categories": null,
+			"channels": null,
+			"roles": null,
+			"show": true
     }
 	}
 }

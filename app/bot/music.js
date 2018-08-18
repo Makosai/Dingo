@@ -67,6 +67,34 @@ function playSong(msg, song) {
   });
 }
 
+function pauseSong(msg) {
+  if (!isInVoice(msg) || !isStreaming(msg)) {
+    return;
+  }
+
+  if (msg.guild.channel.voiceConnection.dispatcher.paused) {
+    msg.channel.send('Sorry, I already paused the music.');
+    return;
+  }
+
+  msg.guild.voiceConnection.dispatcher.pause();
+  msg.channel.send('The song has been paused.');
+}
+
+function resumeSong(msg) {
+  if (!isInVoice(msg) || !isStreaming(msg)) {
+    return;
+  }
+
+  if (!msg.guild.channel.voiceConnection.dispatcher.paused) {
+    msg.channel.send('Either the music is currently playing or there\'s nothing playing to pause.');
+    return;
+  }
+
+  msg.guild.voiceConnection.dispatcher.resume();
+  msg.channel.send('The song has been resumed.');
+}
+
 function stopSong(msg) {
   if (!isInVoice(msg) || !isStreaming(msg)) {
     return;
@@ -133,6 +161,18 @@ ${helpText}\`\`\``);
     case 'stop':
       if (compareChans(msg, cmds.data[param]) && compareRoles(msg, cmds.data[param].roles)) {
         stopSong(msg);
+      }
+      break;
+
+    case 'pause':
+      if (compareChans(msg, cmds.data[param]) && compareRoles(msg, cmds.data[param].roles)) {
+        pauseSong(msg);
+      }
+      break;
+
+    case 'resume':
+      if (compareChans(msg, cmds.data[param]) && compareRoles(msg, cmds.data[param].roles)) {
+        resumeSong(msg);
       }
       break;
 
