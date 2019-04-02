@@ -6,7 +6,12 @@ const { compareChans, compareRoles, compareGuilds } = require.main.require('./ap
 
 const ytdl = require('ytdl-core');
 
-const streamOptions = { seek: 0, volume: 0.5 };
+const streamOptions = {
+  seek: 0,
+  volume: 0.5,
+  filter: 'audioonly',
+  quality: '95'
+};
 
 let cmds = {};
 
