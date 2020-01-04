@@ -1,0 +1,26 @@
+{
+  "name": "dingo",
+  "version": "1.0.0",
+  "description": "A Discord bot with Twitch integrations.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuaintShanty/Dingo.git"
+  },
+  "author": {
+    "name": "Kristopher Ali",
+    "email": "kristopher.ali.dev@gmail.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/QuaintShanty/Dingo/issues"
+  },
+  "homepage": "https://github.com/QuaintShanty/Dingo#readme",
+  "dependencies": {
+    "firebase-admin": "^8.9.0"
+  },
+  "devDependencies": {}
+}
