@@ -1,3 +1,4 @@
 # Dependency directories
 node_modules/
 storage/data/streams/streamList.json
+storage/auth/token.txt
