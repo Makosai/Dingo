@@ -2,14 +2,14 @@ import { client } from './discord.config';
 import { db } from '@firebase/firebase.main';
 import { LocalError } from '@utils/essentials.utils';
 
-interface ICredentials {
+interface IDiscordCredentials {
   token: string;
   clientID: string;
   clientSecret: string;
 }
 
 class DiscordAuth {
-  credentials: ICredentials | undefined;
+  credentials: IDiscordCredentials | undefined;
 
   constructor() {
     this.loadCredentials();
@@ -19,7 +19,7 @@ class DiscordAuth {
     const doc = await db.doc('/discord/credentials').get();
   
     if (doc.exists) {
-      this.credentials = doc.data() as ICredentials;
+      this.credentials = doc.data() as IDiscordCredentials;
   
       const credentialsSet = Object.values(this.credentials).every(item => {
           if (item === '') {
@@ -36,7 +36,7 @@ class DiscordAuth {
         );
       }
     } else {
-      const placeholder: ICredentials = {
+      const placeholder: IDiscordCredentials = {
         token: '',
         clientID: '',
         clientSecret: ''
