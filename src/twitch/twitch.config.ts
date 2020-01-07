@@ -14,7 +14,7 @@ class Twitch {
 
     this.webhook = new TwitchWebhook({
       client_id: TwitchAuth.credentials.clientID,
-      callback: '127.0.0.1'
+      callback: TwitchAuth.credentials.callback
     });
   }
 
