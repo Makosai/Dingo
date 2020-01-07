@@ -1,12 +1,7 @@
 import { client } from './discord.config';
-import { db } from '@firebase/firebase.main';
-import { LocalError } from '@utils/essentials.utils';
+import { loadCredentials, ICredentials } from '@utils/firebase.utils';
 
-interface IDiscordCredentials {
-  token: string;
-  clientID: string;
-  clientSecret: string;
-}
+interface IDiscordCredentials extends ICredentials {}
 
 class DiscordAuth {
   credentials: IDiscordCredentials | undefined;
@@ -16,42 +11,8 @@ class DiscordAuth {
   }
 
   async loadCredentials() {
-    const doc = await db.doc('/discord/credentials').get();
-  
-    if (doc.exists) {
-      this.credentials = doc.data() as IDiscordCredentials;
-  
-      const credentialsSet = Object.values(this.credentials).every(item => {
-          if (item === '') {
-            return false;
-          }
-          return true;
-        });
-  
-      if (!credentialsSet) {
-        throw new Error(
-          LocalError(
-            'Please set up your credentials in firestore at /discord/credentials. A document has been created for you.'
-          )
-        );
-      }
-    } else {
-      const placeholder: IDiscordCredentials = {
-        token: '',
-        clientID: '',
-        clientSecret: ''
-      };
-      db.collection('discord')
-        .doc('credentials')
-        .create(placeholder);
-  
-      throw new Error(
-        LocalError(
-          'Please set up your credentials in firestore at /discord/credentials. A document has been created for you.'
-        )
-      );
-    }
-  
+    this.credentials = await loadCredentials('discord');
+
     client.login(this.credentials.token);
   }
 }
