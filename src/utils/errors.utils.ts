@@ -3,6 +3,23 @@
  */
 export class BaseError extends Error {}
 
+export class ConfigError extends BaseError {
+  /**
+   * Constructs an instance of FatalError
+   *
+   * @param error - Error or error message
+   */
+  constructor(error: string | Error) {
+    if (error instanceof Error) {
+      super('\x1b[31m' + error.message + '\x1b[37m');
+      this.stack = error.stack;
+    } else {
+      super('\x1b[31m' + error + '\x1b[37m');
+      Error.captureStackTrace(this);
+    }
+  }
+}
+
 /**
  * Library error
  */

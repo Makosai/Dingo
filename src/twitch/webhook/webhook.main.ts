@@ -61,7 +61,7 @@ interface ITwitchWebhookOptions {
     port?: number;
   };
   https?: boolean | https.ServerOptions;
-  baseApiUrl: string;
+  baseApiUrl?: string;
 }
 const defaultOptions = {
   lease_seconds: 864000,
@@ -101,6 +101,10 @@ export default class TwitchWebhook extends EventEmitter {
     // Append a / to the end of a url.
     if (options.callback.substr(-1) !== '/') {
       this.options.callback += '/';
+    }
+
+    if(this.options.baseApiUrl === undefined) {
+      throw new FatalError('Base API Url is undefined.');
     }
 
     if (this.options.baseApiUrl.substr(-1) !== '/') {
