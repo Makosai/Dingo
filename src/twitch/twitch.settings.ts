@@ -6,9 +6,10 @@ interface ITwitchSettings {
 
 class TwitchAuth {
   settings!: ITwitchSettings;
+  sync: Promise<any>;
 
   constructor() {
-    this.loadSettings();
+    this.sync = Promise.all([this.loadSettings()]);
   }
 
   async loadSettings() {

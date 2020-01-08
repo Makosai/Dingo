@@ -1,6 +1,6 @@
-import { loadData } from '@utils/firebase.utils';
 import { HelixUser } from 'twitch';
 import { db } from '@firebase/firebase.main';
+import { loadData } from '@utils/firebase.utils';
 import { LocalError } from '@utils/errors.utils';
 
 interface ITwitchStreamsData {
@@ -11,9 +11,10 @@ interface ITwitchStreamsData {
 class TwitchStreams {
   users!: HelixUser[];
   channels!: string[];
+  sync: Promise<any>;
 
   constructor() {
-    this.loadStreams();
+    this.sync = Promise.all([this.loadStreams()]);
   }
 
   async loadStreams() {
@@ -23,7 +24,7 @@ class TwitchStreams {
     const data: ITwitchStreamsData = { users, channels };
 
     const res = await loadData('twitch', 'streams', data);
-    this.users = res.streams;
+    this.users = res.users;
     this.channels = res.channels;
   }
 

@@ -4,9 +4,10 @@ import twitchAuth from './twitch.auth';
 class TwitchWebHooks {
   webhook!: Webhooks;
   subscriptions: Map<string, StreamChangeSubscription> = new Map<string, StreamChangeSubscription>();
+  sync: Promise<any>;
 
   constructor() {
-    this.loadWebhook();
+    this.sync = Promise.all([this.loadWebhook()]);
   }
 
   private async loadWebhook() {

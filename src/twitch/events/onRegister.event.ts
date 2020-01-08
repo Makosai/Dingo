@@ -1,9 +1,8 @@
 import TwitchClient from '@twitch/twitch.client';
 import TwitchSettings from '@twitch/twitch.settings';
 
-const chatClient = TwitchClient.client;
-const twitchSettings = TwitchSettings.settings;
-
-chatClient.onRegister(() =>
-  twitchSettings.channels.forEach(chan => chatClient.join(chan))
+TwitchClient.client.onRegister(() =>
+  TwitchSettings.settings.channels.forEach(chan =>
+    TwitchClient.client.join(chan)
+  )
 );

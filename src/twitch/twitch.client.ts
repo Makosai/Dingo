@@ -4,18 +4,16 @@ import TwitchAuth from './twitch.auth';
 class TwitchClient {
   client!: ChatClient;
 
+  sync: Promise<any>;
+
   constructor() {
-    this.loadClient();
+    this.sync = Promise.all([this.loadClient()]);
   }
 
   private async loadClient() {
     this.client = await ChatClient.forTwitchClient(
       TwitchAuth.twitchCredentials
     );
-
-    require('@twitch/events/events.main'); // Load all events.
-
-    await this.client.connect();
   }
 }
 

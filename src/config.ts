@@ -1,3 +1,5 @@
-import '@firebase/firebase.config';
-import '@twitch/twitch.config';
-import '@discord/discord.config';
+(async function() {
+  await import('@firebase/firebase.config');
+  await (await import('@twitch/twitch.config')).default;
+  await import('@discord/discord.config');
+})();
