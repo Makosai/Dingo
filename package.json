@@ -26,6 +26,7 @@
   "_moduleAliases": {
     "@discord": "./lib/discord",
     "@firebase": "./lib/firebase",
+    "@twitch": "./lib/twitch",
     "@utils": "./lib/utils"
   },
   "dependencies": {
@@ -39,7 +40,6 @@
     "request-promise": "^4.2.5",
     "twitch": "^3.5.6",
     "twitch-chat-client": "^3.6.0",
-    "twitch-webhook": "^1.2.4",
     "twitch-webhooks": "^3.5.6"
   },
   "devDependencies": {
