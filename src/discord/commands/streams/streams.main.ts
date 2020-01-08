@@ -33,7 +33,7 @@ class Streams {
 
     switch (cmd) {
       case 'add':
-        this.addStream(params.join(' ')).then((user) => msg.channel.send(`${user.displayName} added to the stream list.`));
+        this.addStream(params.join(' ')).then((user) => msg.channel.send(`Added ${user.displayName} to the stream list.`));
         return;
 
       case 'remove':
