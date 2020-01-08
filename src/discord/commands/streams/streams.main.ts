@@ -7,9 +7,27 @@ import TwitchStreams from '@twitch/twitch.streams';
 import { TextChannel, RichEmbed, Message } from 'discord.js';
 
 class Streams {
-  constructor() {}
+  constructor() {
+    this.loadStreams();
+  }
 
-  loadStreams() {}
+  async loadStreams() {
+    TwitchStreams.users.forEach(user => {
+      twitchWebhooks.webhook.subscribeToStreamChanges(user.id, async stream => {
+        if (stream !== undefined) {
+          const { message, embed } = await this.broadcast(user, stream);
+
+          TwitchStreams.channels.forEach(id => {
+            const channel = client.channels.get(id);
+
+            if (channel !== undefined && channel instanceof TextChannel) {
+              channel.send(message, { embed });
+            }
+          });
+        }
+      });
+    });
+  }
 
   /**
    *
@@ -114,9 +132,7 @@ class Streams {
 ${users}`;
   }
 
-  private removeStream(user: string) {
-
-  }
+  private removeStream(user: string) {}
 }
 
 export default new Streams();
