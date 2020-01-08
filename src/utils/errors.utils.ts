@@ -3,9 +3,26 @@
  */
 export class BaseError extends Error {}
 
+export class LocalError extends BaseError {
+  /**
+   * Constructs an instance of LocalError
+   *
+   * @param error - Error or error message
+   */
+  constructor(error: string | Error) {
+    if (error instanceof Error) {
+      super('\x1b[31m' + error.message + '\x1b[37m');
+      this.stack = error.stack;
+    } else {
+      super('\x1b[31m' + error + '\x1b[37m');
+      Error.captureStackTrace(this);
+    }
+  }
+}
+
 export class InitError extends BaseError {
   /**
-   * Constructs an instance of FatalError
+   * Constructs an instance of InitError
    *
    * @param error - Error or error message
    */

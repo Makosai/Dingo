@@ -1,5 +1,4 @@
 import { db } from '@firebase/firebase.main';
-import { LocalError } from './essentials.utils';
 import { InitError } from './errors.utils';
 
 export interface ICredentials {
@@ -65,10 +64,8 @@ export async function loadCredentials(collection: string, id = 'credentials') {
     });
 
     if (!credentialsSet) {
-      throw new Error(
-        LocalError(
-          `Please set up your credentials in /${collection}/${id}. A document has been created for you.`
-        )
+      throw new LocalError(
+        `Please set up your credentials in /${collection}/${id}. A document has been created for you.`
       );
     }
   } else {
@@ -77,10 +74,8 @@ export async function loadCredentials(collection: string, id = 'credentials') {
       .doc(id)
       .create(placeholder);
 
-    throw new Error(
-      LocalError(
-        `Please set up your credentials in /${collection}/${id}. A document has been created for you.`
-      )
+    throw new LocalError(
+      `Please set up your credentials in /${collection}/${id}. A document has been created for you.`
     );
   }
 

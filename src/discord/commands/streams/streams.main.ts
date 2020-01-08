@@ -1,4 +1,4 @@
-import { LocalError } from '@utils/essentials.utils';
+import { LocalError } from '@utils/errors.utils';
 
 class Streams {
   constructor() {}
@@ -32,10 +32,8 @@ class Streams {
 
       case 'update':
         if (params.length > 2) {
-          throw new Error(
-            LocalError(
-              'Failed to update the stream. Make sure to wrap the names in quotes or apostrophes.'
-            )
+          throw new LocalError(
+            'Failed to update the stream. Make sure to wrap the names in quotes or apostrophes.'
           );
         }
         this.updateStream(params[0], params[1]);

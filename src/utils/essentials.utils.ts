@@ -1,3 +1,5 @@
+import { LocalError } from './errors.utils';
+
 /**
  * Wraps some data in a timestamp.
  */
@@ -47,15 +49,9 @@ export function hasProps(
 
   if (!status) {
     if (throwError) {
-      throw new Error(
-        LocalError(info + ' is missing from the list of properties.')
-      );
+      throw new LocalError(info + ' is missing from the list of properties.');
     }
   }
 
   return status;
-}
-
-export function LocalError(msg: string) {
-  return '\x1b[31m' + msg + '\x1b[37m';
 }
