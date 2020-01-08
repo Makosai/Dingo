@@ -1,10 +1,8 @@
 import { LocalError } from '@utils/errors.utils';
 import TwitchWebhooks from '@twitch/twitch.webhooks';
 import twitchAuth from '@twitch/twitch.auth';
-import { HelixStream, HelixUser } from 'twitch';
-import { client } from '@discord/discord.main';
 import TwitchStreams from '@twitch/twitch.streams';
-import { TextChannel, RichEmbed, Message } from 'discord.js';
+import { Message } from 'discord.js';
 
 class Streams {
   constructor() {
@@ -13,19 +11,7 @@ class Streams {
 
   async loadStreams() {
     TwitchStreams.users.forEach(user => {
-      TwitchWebhooks.webhook.subscribeToStreamChanges(user.id, async stream => {
-        if (stream !== undefined) {
-          const { message, embed } = await this.broadcast(user, stream);
-
-          TwitchStreams.channels.forEach(id => {
-            const channel = client.channels.get(id);
-
-            if (channel !== undefined && channel instanceof TextChannel) {
-              channel.send(message, { embed });
-            }
-          });
-        }
-      });
+     TwitchStreams.subscribe(user);
     });
   }
 
@@ -56,41 +42,6 @@ class Streams {
     }
   }
 
-  async broadcast(user: HelixUser, stream: HelixStream) {
-    const url = `https://twitch.tv/${user.name}`;
-    const message = `**${user.displayName}** is now live!`;
-
-    if (stream === null) {
-      throw new LocalError(
-        `Failed to broadcast ${user.name}'s stream. Stream is null.`
-      );
-    }
-
-    const game = await stream.getGame();
-
-    if (game === null) {
-      throw new LocalError(
-        `Failed to broadcast ${user.name}'s stream. Game is null.`
-      );
-    }
-
-    let embed = new RichEmbed();
-
-    // Author
-    embed = embed.setAuthor(user.displayName, user.profilePictureUrl, url);
-
-    // Game & Viewers
-    embed = embed.addField('Game', game.name, true);
-    embed = embed.addField('Viewers', stream.viewers, true);
-
-    embed = embed.setColor('6441A4');
-    embed = embed.setTitle(`${stream.title}`);
-    embed = embed.setURL(url);
-    embed = embed.setImage(stream.thumbnailUrl);
-
-    return { message, embed };
-  }
-
   private async addStream(user: string) {
     if (
       TwitchStreams.users.find(
@@ -112,22 +63,7 @@ class Streams {
 
     await TwitchStreams.addUser(userData);
 
-    await TwitchWebhooks.webhook.subscribeToStreamChanges(
-      userData.id,
-      async stream => {
-        if (stream !== undefined) {
-          const { message, embed } = await this.broadcast(userData, stream);
-
-          TwitchStreams.channels.forEach(id => {
-            const channel = client.channels.get(id);
-
-            if (channel !== undefined && channel instanceof TextChannel) {
-              channel.send(message, { embed });
-            }
-          });
-        }
-      }
-    );
+    await TwitchStreams.subscribe(userData);
 
     return userData;
   }

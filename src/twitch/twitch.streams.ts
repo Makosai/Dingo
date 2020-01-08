@@ -1,7 +1,10 @@
-import { HelixUser } from 'twitch';
+import { HelixUser, HelixStream } from 'twitch';
 import { loadData, updateDB } from '@utils/firebase.utils';
 import { LocalError } from '@utils/errors.utils';
 import TwitchAuth from './twitch.auth';
+import TwitchWebhooks from './twitch.webhooks';
+import { client } from '@discord/discord.main';
+import { TextChannel, RichEmbed } from 'discord.js';
 
 interface ITwitchStreamsData {
   users: HelixUser[];
@@ -59,6 +62,57 @@ class TwitchStreams {
         'Failed to remove a user from the TwitchStreams.\n\n' + user
       );
     });
+  }
+
+  async subscribe(user: HelixUser) {
+    TwitchWebhooks.webhook.subscribeToStreamChanges(user.id, async stream => {
+      if (stream !== undefined) {
+        const { message, embed } = await TwitchStreams.broadcast(user, stream);
+
+        this.channels.forEach(id => {
+          const channel = client.channels.get(id);
+
+          if (channel !== undefined && channel instanceof TextChannel) {
+            channel.send(message, { embed });
+          }
+        });
+      }
+    });
+  }
+
+  static async broadcast(user: HelixUser, stream: HelixStream) {
+    const url = `https://twitch.tv/${user.name}`;
+    const message = `**${user.displayName}** is now live!`;
+
+    if (stream === null) {
+      throw new LocalError(
+        `Failed to broadcast ${user.name}'s stream. Stream is null.`
+      );
+    }
+
+    const game = await stream.getGame();
+
+    if (game === null) {
+      throw new LocalError(
+        `Failed to broadcast ${user.name}'s stream. Game is null.`
+      );
+    }
+
+    let embed = new RichEmbed();
+
+    // Author
+    embed = embed.setAuthor(user.displayName, user.profilePictureUrl, url);
+
+    // Game & Viewers
+    embed = embed.addField('Game', game.name, true);
+    embed = embed.addField('Viewers', stream.viewers, true);
+
+    embed = embed.setColor('6441A4');
+    embed = embed.setTitle(`${stream.title}`);
+    embed = embed.setURL(url);
+    embed = embed.setImage(stream.thumbnailUrl);
+
+    return { message, embed };
   }
 }
 
