@@ -92,6 +92,16 @@ class Streams {
   }
 
   private async addStream(user: string) {
+    if (
+      TwitchStreams.users.find(
+        userData => userData.name.toLowerCase() === user.toLowerCase()
+      ) !== undefined
+    ) {
+      throw new LocalError(
+        `Failed to add ${user} to the stream list. User already exists.`
+      );
+    }
+
     const userData = await twitchAuth.twitchCredentials.helix.users.getUserByName(
       user
     );
