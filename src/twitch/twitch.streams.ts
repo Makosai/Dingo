@@ -1,6 +1,7 @@
 import { HelixUser } from 'twitch';
 import { loadData, updateDB } from '@utils/firebase.utils';
 import { LocalError } from '@utils/errors.utils';
+import TwitchAuth from './twitch.auth';
 
 interface ITwitchStreamsData {
   users: HelixUser[];
@@ -23,7 +24,12 @@ class TwitchStreams {
     const data: ITwitchStreamsData = { users, channels };
 
     const res = await loadData('twitch', 'streams', data);
-    this.users = res.users;
+    this.users = await TwitchAuth.twitchCredentials.helix.users.getUsersByNames(
+      res.users.map((user: any) => {
+        return user._data.id;
+      })
+    );
+
     this.channels = res.channels;
   }
 
