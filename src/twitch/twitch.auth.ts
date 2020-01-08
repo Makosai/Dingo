@@ -1,13 +1,13 @@
-import { loadCredentials, ICredentials } from '@utils/firebase.utils';
-import { db } from '@firebase/firebase.main';
-import { ConfigError } from '@utils/errors.utils';
+import { loadCredentials, ICredentials, loadData } from '@utils/firebase.utils';
+import TwitchCredentials from 'twitch';
 
 interface ITwitchCredentials extends ICredentials {
   callback: string;
 }
 
 class TwitchAuth {
-  credentials: ITwitchCredentials | undefined;
+  credentials!: ITwitchCredentials;
+  twitchCredentials!: TwitchCredentials;
 
   constructor() {
     this.loadCredentials();
@@ -18,47 +18,20 @@ class TwitchAuth {
       ...(await loadCredentials('twitch')),
       ...(await this.loadConfig())
     };
+
+    this.loadTwitchCredentials();
+  }
+
+  loadTwitchCredentials() {
+    const { clientID, clientSecret } = this.credentials;
+    this.twitchCredentials = TwitchCredentials.withClientCredentials(
+      clientID,
+      clientSecret
+    );
   }
 
   async loadConfig() {
-    const collection = 'twitch';
-    const id = 'config';
-
-    const doc = await db
-      .collection(collection)
-      .doc(id)
-      .get();
-
-    let config = {
-      callback: ''
-    };
-
-    if (doc.exists) {
-      config = doc.data() as { callback: string };
-
-      const configSet = Object.values(config).every(item => {
-        if (item === '') {
-          return false;
-        }
-        return true;
-      });
-
-      if (!configSet) {
-        throw new ConfigError(
-          `Please set up your config in /${collection}/${id}. A document has been created for you.`
-        );
-      }
-    } else {
-      db.collection(collection)
-        .doc(id)
-        .create(config);
-
-      throw new ConfigError(
-        `Please set up your config in /${collection}/${id}. A document has been created for you.`
-      );
-    }
-
-    return config;
+    return await loadData('twitch', 'config', { callback: '' });
   }
 }
 
