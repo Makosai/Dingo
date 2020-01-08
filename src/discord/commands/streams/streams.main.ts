@@ -2,7 +2,7 @@ import { LocalError } from '@utils/errors.utils';
 import TwitchWebhooks from '@twitch/twitch.webhooks';
 import twitchAuth from '@twitch/twitch.auth';
 import { HelixStream, HelixUser } from 'twitch';
-import { client } from '@discord/discord.config';
+import { client } from '@discord/discord.main';
 import TwitchStreams from '@twitch/twitch.streams';
 import { TextChannel, RichEmbed, Message } from 'discord.js';
 

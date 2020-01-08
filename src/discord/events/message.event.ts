@@ -1,4 +1,4 @@
-import { client } from '@discord/discord.config';
+import { client } from '@discord/discord.main';
 import handle from '@discord/commands/cmds.main';
 
 client.on('message', msg => {

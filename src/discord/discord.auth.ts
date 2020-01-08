@@ -1,4 +1,4 @@
-import { client } from './discord.config';
+import { client } from './discord.main';
 import { loadCredentials, ICredentials } from '@utils/firebase.utils';
 
 interface IDiscordCredentials extends ICredentials {}

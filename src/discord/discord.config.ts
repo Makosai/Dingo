@@ -1,3 +1,3 @@
-import Discord from 'discord.js';
-
-export const client = new Discord.Client();
+import './discord.main';
+import './events/events.main';
+import './discord.auth';
