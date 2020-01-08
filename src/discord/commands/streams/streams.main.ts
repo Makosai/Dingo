@@ -47,11 +47,11 @@ class Streams {
 
     switch (cmd) {
       case 'add':
-        this.addStream(params.join(' ')).then(() => msg.channel.send(''));
+        this.addStream(params.join(' ')).then((user) => msg.channel.send(`${user.displayName} added to the stream list.`));
         return;
 
       case 'remove':
-        this.removeStream(params.join(' '));
+        this.removeStream(params.join(' ')).then((user) => msg.channel.send(`Removed ${user.displayName} from the stream list.`));
         return;
     }
   }
@@ -155,8 +155,6 @@ ${users}\`\`\``;
       );
     }
 
-    TwitchStreams.removeUser(foundUser);
-
     const sub = TwitchWebhooks.subscriptions.get(foundUser.id);
 
     if (sub === undefined) {
@@ -164,6 +162,8 @@ ${users}\`\`\``;
     }
 
     await sub.stop();
+
+    await TwitchStreams.removeUser(foundUser);
 
     return foundUser;
   }
