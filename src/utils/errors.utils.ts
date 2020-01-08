@@ -3,7 +3,7 @@
  */
 export class BaseError extends Error {}
 
-export class ConfigError extends BaseError {
+export class InitError extends BaseError {
   /**
    * Constructs an instance of FatalError
    *
