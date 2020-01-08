@@ -125,11 +125,11 @@ class Streams {
   }
 
   private getStreams() {
-    const users = TwitchStreams.users.map(user => `; ${user.displayName}`);
+    const users = TwitchStreams.users.map(user => `# ${user.displayName}`).join('\n');
 
     return `\`\`\`\`ini
 [Streams]
-${users}`;
+${users}\`\`\``;
   }
 
   private async removeStream(user: string) {

@@ -20,7 +20,7 @@ async function handleCommand(msg: Message) {
 
   switch (command) {
     case 'help':
-      msg.channel.send(commandsConfig.getCommands());
+      msg.channel.send(await commandsConfig.getCommands());
       return;
   }
 

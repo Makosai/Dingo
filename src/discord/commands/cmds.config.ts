@@ -90,13 +90,14 @@ class CommandsConfig {
   async getCommands(raw = false) {
     if (raw) return this.commands;
 
-    return this.commands
-      .map(cmd => {
-        return `[${cmd.name}]
-; ${cmd.description}
-`;
-      })
+    const parsedCommands = this.commands
+      .map(cmd => `${cmd.name} = ${cmd.description}`)
       .join('');
+
+    return `\`\`\`ini
+[Commands]
+
+${parsedCommands}\`\`\``;
   }
 }
 
