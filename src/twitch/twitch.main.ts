@@ -1,2 +1,5 @@
-import './twitch.config';
-import './twitch.auth';
+class Twitch {
+  constructor() {}
+}
+
+export default new Twitch();
