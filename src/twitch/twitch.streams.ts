@@ -1,6 +1,5 @@
 import { HelixUser } from 'twitch';
-import { db } from '@firebase/firebase.main';
-import { loadData } from '@utils/firebase.utils';
+import { loadData, updateDB } from '@utils/firebase.utils';
 import { LocalError } from '@utils/errors.utils';
 
 interface ITwitchStreamsData {
@@ -31,15 +30,11 @@ class TwitchStreams {
   async addUser(user: HelixUser) {
     this.users.push(user);
 
-    return db
-      .collection('twitch')
-      .doc('streams')
-      .update({ users: this.users })
-      .catch(err => {
-        throw new LocalError(
-          'Failed to add a user to the TwitchStreams.\n\n' + user
-        );
-      });
+    return updateDB('twitch', 'streams', { users: this.users }).catch(err => {
+      throw new LocalError(
+        'Failed to add a user to the TwitchStreams.\n\n' + user
+      );
+    });
   }
 }
 

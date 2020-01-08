@@ -81,3 +81,9 @@ export async function loadCredentials(collection: string, id = 'credentials') {
 
   return credentials;
 }
+
+export async function updateDB(collection: string, id: string, data: any) {
+  db.collection(collection)
+  .doc(id)
+  .update(JSON.parse(JSON.stringify(data)))
+}
