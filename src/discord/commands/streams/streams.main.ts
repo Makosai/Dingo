@@ -1,5 +1,5 @@
 import { LocalError } from '@utils/errors.utils';
-import twitchWebhooks from '@twitch/twitch.webhooks';
+import TwitchWebhooks from '@twitch/twitch.webhooks';
 import twitchAuth from '@twitch/twitch.auth';
 import { HelixStream, HelixUser } from 'twitch';
 import { client } from '@discord/discord.config';
@@ -13,7 +13,7 @@ class Streams {
 
   async loadStreams() {
     TwitchStreams.users.forEach(user => {
-      twitchWebhooks.webhook.subscribeToStreamChanges(user.id, async stream => {
+      TwitchWebhooks.webhook.subscribeToStreamChanges(user.id, async stream => {
         if (stream !== undefined) {
           const { message, embed } = await this.broadcast(user, stream);
 
@@ -106,7 +106,7 @@ class Streams {
 
     await TwitchStreams.addUser(userData);
 
-    twitchWebhooks.webhook.subscribeToStreamChanges(
+    TwitchWebhooks.webhook.subscribeToStreamChanges(
       userData.id,
       async stream => {
         if (stream !== undefined) {
@@ -132,7 +132,25 @@ class Streams {
 ${users}`;
   }
 
-  private removeStream(user: string) {}
+  private async removeStream(user: string) {
+    const foundUser = TwitchStreams.users.find(
+      userData => userData.name.toLowerCase() === user.toLowerCase()
+    );
+
+    if (foundUser === undefined) {
+      throw new LocalError(
+        `Couldn't find a user in the list with the name ${user}.`
+      );
+    }
+
+    const sub = TwitchWebhooks.subscriptions.get(foundUser.id);
+
+    if (sub === undefined) {
+      throw new LocalError(`Couldn't find the webhook for ${user}.`);
+    }
+
+    sub.stop();
+  }
 }
 
 export default new Streams();
