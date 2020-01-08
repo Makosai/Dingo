@@ -65,19 +65,28 @@ class TwitchStreams {
   }
 
   async subscribe(user: HelixUser) {
-    TwitchWebhooks.webhook.subscribeToStreamChanges(user.id, async stream => {
-      if (stream !== undefined) {
-        const { message, embed } = await TwitchStreams.broadcast(user, stream);
+    TwitchWebhooks.subscriptions.set(
+      user.id,
+      await TwitchWebhooks.webhook.subscribeToStreamChanges(
+        user.id,
+        async stream => {
+          if (stream !== undefined) {
+            const { message, embed } = await TwitchStreams.broadcast(
+              user,
+              stream
+            );
 
-        this.channels.forEach(id => {
-          const channel = client.channels.get(id);
+            this.channels.forEach(id => {
+              const channel = client.channels.get(id);
 
-          if (channel !== undefined && channel instanceof TextChannel) {
-            channel.send(message, { embed });
+              if (channel !== undefined && channel instanceof TextChannel) {
+                channel.send(message, { embed });
+              }
+            });
           }
-        });
-      }
-    });
+        }
+      )
+    );
   }
 
   static async broadcast(user: HelixUser, stream: HelixStream) {
