@@ -1,15 +1,17 @@
-import Webhooks from 'twitch-webhooks';
+import Webhooks, { StreamChangeSubscription } from 'twitch-webhooks';
 import twitchAuth from './twitch.auth';
 
 class TwitchWebHooks {
   webhook!: Webhooks;
+  subscriptions: Map<string, StreamChangeSubscription> = new Map<string, StreamChangeSubscription>();
 
   constructor() {
     this.loadWebhook();
   }
 
   private async loadWebhook() {
-    return await Webhooks.create(twitchAuth.twitchCredentials, { port: 2241 });
+    this.webhook = await Webhooks.create(twitchAuth.twitchCredentials, { port: 2241 });
+    this.webhook.listen();
   }
 }
 
