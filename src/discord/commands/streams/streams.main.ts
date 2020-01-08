@@ -37,7 +37,7 @@ class Streams {
   handler(msg: Message, cmd: string, params?: string[]) {
     switch (cmd) {
       case 'list':
-        this.getStreams();
+        msg.channel.send(this.getStreams());
         return;
     }
 
@@ -46,10 +46,6 @@ class Streams {
     }
 
     switch (cmd) {
-      case 'list':
-        msg.channel.send(this.getStreams());
-        return;
-
       case 'add':
         this.addStream(params.join(' '));
         return;
@@ -125,10 +121,14 @@ class Streams {
   }
 
   private getStreams() {
-    const users = TwitchStreams.users.map(user => `# ${user.displayName}`).join('\n');
+    const users =
+      TwitchStreams.users.length <= 0
+        ? '# The streams list is empty.'
+        : TwitchStreams.users.map(user => `# ${user.displayName}`).join('\n');
 
-    return `\`\`\`\`ini
+    return `\`\`\`ini
 [Streams]
+
 ${users}\`\`\``;
   }
 
