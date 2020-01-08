@@ -64,7 +64,7 @@ export async function loadCredentials(collection: string, id = 'credentials') {
     });
 
     if (!credentialsSet) {
-      throw new LocalError(
+      throw new InitError(
         `Please set up your credentials in /${collection}/${id}. A document has been created for you.`
       );
     }
@@ -74,7 +74,7 @@ export async function loadCredentials(collection: string, id = 'credentials') {
       .doc(id)
       .create(placeholder);
 
-    throw new LocalError(
+    throw new InitError(
       `Please set up your credentials in /${collection}/${id}. A document has been created for you.`
     );
   }
