@@ -18,6 +18,9 @@
       "@firebase/*": [
         "firebase/*"
       ],
+      "@twitch/*": [
+        "twitch/*"
+      ],
       "@utils/*": [
         "utils/*"
       ]
