@@ -11,7 +11,7 @@ class Streams {
 
   async loadStreams() {
     TwitchStreams.users.forEach(user => {
-     TwitchStreams.subscribe(user);
+      TwitchStreams.subscribe(user);
     });
   }
 
@@ -25,6 +25,26 @@ class Streams {
       case 'list':
         msg.channel.send(this.getStreams());
         return;
+
+      case 'register':
+        TwitchStreams.addChannel(msg.channel.id).then(async () => {
+          await msg.author.send(`I am now registered to ${msg.channel.toString()}`);
+          await msg.delete();
+        }).catch(async () => {
+          await msg.author.send(`Something went wrong. Maybe I'm already registered to #${msg.channel.toString()}?`);
+          msg.delete();
+        });
+        return;
+
+        case 'unregister':
+          TwitchStreams.removeChannel(msg.channel.id).then(async () => {
+            await msg.author.send(`I am no longer registered to ${msg.channel.toString()}`);
+            await msg.delete();
+          }).catch(async () => {
+            await msg.author.send(`Oopsie! Check if I'm actually registered to #${msg.channel.toString()}.`);
+            msg.delete();
+          });
+          return;
     }
 
     if (params === undefined) {
@@ -33,11 +53,15 @@ class Streams {
 
     switch (cmd) {
       case 'add':
-        this.addStream(params.join(' ')).then((user) => msg.channel.send(`Added ${user.displayName} to the stream list.`));
+        this.addStream(params.join(' ')).then(user =>
+          msg.channel.send(`Added ${user.displayName} to the stream list.`)
+        );
         return;
 
       case 'remove':
-        this.removeStream(params.join(' ')).then((user) => msg.channel.send(`Removed ${user.displayName} from the stream list.`));
+        this.removeStream(params.join(' ')).then(user =>
+          msg.channel.send(`Removed ${user.displayName} from the stream list.`)
+        );
         return;
     }
   }

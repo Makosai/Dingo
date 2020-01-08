@@ -89,6 +89,22 @@ class TwitchStreams {
     );
   }
 
+  async addChannel(id: string) {
+    if(this.channels.includes(id)) {
+      throw new LocalError('Failed to add the discord channel to TwitchStreams because it already exists.');
+    }
+
+    this.channels.push(id);
+  }
+
+  async removeChannel(id: string) {
+    if(!this.channels.includes(id)) {
+      throw new LocalError('Failed to remove the discord channel from TwitchStreams because it does not exist.');
+    }
+
+    this.channels.splice(this.channels.indexOf(id), 1);
+  }
+
   static async broadcast(user: HelixUser, stream: HelixStream) {
     const url = `https://twitch.tv/${user.name}`;
     const message = `**${user.displayName}** is now live!`;
