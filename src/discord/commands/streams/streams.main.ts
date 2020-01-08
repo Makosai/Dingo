@@ -2,7 +2,8 @@ import { LocalError } from '@utils/errors.utils';
 import TwitchWebhooks from '@twitch/twitch.webhooks';
 import twitchAuth from '@twitch/twitch.auth';
 import TwitchStreams from '@twitch/twitch.streams';
-import { Message } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
+import { client } from '@discord/discord.main';
 
 class Streams {
   constructor() {
@@ -27,24 +28,58 @@ class Streams {
         return;
 
       case 'register':
-        TwitchStreams.addChannel(msg.channel.id).then(async () => {
-          await msg.author.send(`I am now registered to ${msg.channel.toString()}`);
-          await msg.delete();
-        }).catch(async () => {
-          await msg.author.send(`Something went wrong. Maybe I'm already registered to #${msg.channel.toString()}?`);
-          msg.delete();
-        });
+        TwitchStreams.addChannel(msg.channel.id)
+          .then(async () => {
+            await msg.author.send(
+              `I am now registered to ${msg.channel.toString()}`
+            );
+            await msg.delete();
+          })
+          .catch(async () => {
+            await msg.author.send(
+              `Something went wrong. Maybe I'm already registered to #${msg.channel.toString()}?`
+            );
+            await msg.delete();
+          });
         return;
 
-        case 'unregister':
-          TwitchStreams.removeChannel(msg.channel.id).then(async () => {
-            await msg.author.send(`I am no longer registered to ${msg.channel.toString()}`);
+      case 'unregister':
+        TwitchStreams.removeChannel(msg.channel.id)
+          .then(async () => {
+            await msg.author.send(
+              `I am no longer registered to ${msg.channel.toString()}`
+            );
             await msg.delete();
-          }).catch(async () => {
-            await msg.author.send(`Oopsie! Check if I'm actually registered to #${msg.channel.toString()}.`);
-            msg.delete();
+          })
+          .catch(async () => {
+            await msg.author.send(
+              `Oopsie! Check if I'm actually registered to #${msg.channel.toString()}.`
+            );
+            await msg.delete();
           });
-          return;
+        return;
+
+      case 'registered':
+        const parsedChannels =
+          TwitchStreams.channels
+            .map(channel => {
+              const foundChannel = client.channels.get(channel) as TextChannel;
+
+              return `# ${foundChannel.name}`;
+            })
+            .join('\n') || `# I'm not registered to any channels.`;
+
+        msg.author
+          .send(
+            `\`\`\`ini
+[Registration]
+
+${parsedChannels}\`\`\``
+          )
+          .then(() => msg.delete())
+          .catch(() => msg.delete());
+
+        return;
     }
 
     if (params === undefined) {

@@ -77,11 +77,9 @@ class TwitchStreams {
             );
 
             this.channels.forEach(id => {
-              const channel = client.channels.get(id);
+              const channel = client.channels.get(id) as TextChannel;
 
-              if (channel !== undefined && channel instanceof TextChannel) {
-                channel.send(message, { embed });
-              }
+              channel.send(message, { embed });
             });
           }
         }
@@ -90,19 +88,39 @@ class TwitchStreams {
   }
 
   async addChannel(id: string) {
-    if(this.channels.includes(id)) {
-      throw new LocalError('Failed to add the discord channel to TwitchStreams because it already exists.');
+    if (this.channels.includes(id)) {
+      throw new LocalError(
+        'Failed to add the discord channel to TwitchStreams because it already exists.'
+      );
     }
 
     this.channels.push(id);
+
+    return updateDB('twitch', 'streams', { channels: this.channels }).catch(
+      err => {
+        throw new LocalError(
+          'Failed to remove a user from the TwitchStreams.\n\n' + id
+        );
+      }
+    );
   }
 
   async removeChannel(id: string) {
-    if(!this.channels.includes(id)) {
-      throw new LocalError('Failed to remove the discord channel from TwitchStreams because it does not exist.');
+    if (!this.channels.includes(id)) {
+      throw new LocalError(
+        'Failed to remove the discord channel from TwitchStreams because it does not exist.'
+      );
     }
 
     this.channels.splice(this.channels.indexOf(id), 1);
+
+    return updateDB('twitch', 'streams', { channels: this.channels }).catch(
+      err => {
+        throw new LocalError(
+          'Failed to remove a channel from the TwitchStreams.\n\n' + id
+        );
+      }
+    );
   }
 
   static async broadcast(user: HelixUser, stream: HelixStream) {
