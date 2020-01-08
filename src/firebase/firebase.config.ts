@@ -1,1 +1,1 @@
-import 'firebase.main';
+import './firebase.main';
