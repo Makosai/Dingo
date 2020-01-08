@@ -30,7 +30,7 @@ async function handleCommand(msg: Message) {
 
   switch (command) {
     case 'streams':
-      streams.handler(params[0], params?.slice(1));
+      streams.handler(msg, params[0], params?.slice(1));
       return;
 
     case 'music':
