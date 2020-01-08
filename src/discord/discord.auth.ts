@@ -4,7 +4,7 @@ import { loadCredentials, ICredentials } from '@utils/firebase.utils';
 interface IDiscordCredentials extends ICredentials {}
 
 class DiscordAuth {
-  credentials: IDiscordCredentials | undefined;
+  credentials!: IDiscordCredentials;
 
   constructor() {
     this.loadCredentials();
