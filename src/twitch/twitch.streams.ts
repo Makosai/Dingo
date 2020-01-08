@@ -24,7 +24,7 @@ class TwitchStreams {
     const data: ITwitchStreamsData = { users, channels };
 
     const res = await loadData('twitch', 'streams', data);
-    this.users = await TwitchAuth.twitchCredentials.helix.users.getUsersByNames(
+    this.users = await TwitchAuth.twitchCredentials.helix.users.getUsersByIds(
       res.users.map((user: any) => {
         return user._data.id;
       })
@@ -39,6 +39,24 @@ class TwitchStreams {
     return updateDB('twitch', 'streams', { users: this.users }).catch(err => {
       throw new LocalError(
         'Failed to add a user to the TwitchStreams.\n\n' + user
+      );
+    });
+  }
+
+  async removeUser(user: HelixUser) {
+    const foundUser = this.users.indexOf(user);
+
+    if (foundUser === undefined) {
+      throw new LocalError(
+        `Failed to remove ${user} from the stream list because they don't exist.`
+      );
+    }
+
+    this.users.splice(foundUser, 1);
+
+    return updateDB('twitch', 'streams', { users: this.users }).catch(err => {
+      throw new LocalError(
+        'Failed to remove a user from the TwitchStreams.\n\n' + user
       );
     });
   }

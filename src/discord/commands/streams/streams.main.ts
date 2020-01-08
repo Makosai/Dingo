@@ -47,7 +47,7 @@ class Streams {
 
     switch (cmd) {
       case 'add':
-        this.addStream(params.join(' '));
+        this.addStream(params.join(' ')).then(() => msg.channel.send(''));
         return;
 
       case 'remove':
@@ -112,7 +112,7 @@ class Streams {
 
     await TwitchStreams.addUser(userData);
 
-    TwitchWebhooks.webhook.subscribeToStreamChanges(
+    await TwitchWebhooks.webhook.subscribeToStreamChanges(
       userData.id,
       async stream => {
         if (stream !== undefined) {
@@ -128,6 +128,8 @@ class Streams {
         }
       }
     );
+
+    return userData;
   }
 
   private getStreams() {
@@ -153,13 +155,17 @@ ${users}\`\`\``;
       );
     }
 
+    TwitchStreams.removeUser(foundUser);
+
     const sub = TwitchWebhooks.subscriptions.get(foundUser.id);
 
     if (sub === undefined) {
       throw new LocalError(`Couldn't find the webhook for ${user}.`);
     }
 
-    sub.stop();
+    await sub.stop();
+
+    return foundUser;
   }
 }
 

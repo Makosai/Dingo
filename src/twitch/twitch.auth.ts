@@ -1,6 +1,5 @@
 import { loadCredentials, ICredentials } from '@utils/firebase.utils';
-import TwitchCredentials, { AccessToken } from 'twitch';
-import { LocalError } from '@utils/errors.utils';
+import TwitchCredentials from 'twitch';
 
 interface ITwitchCredentials extends ICredentials {}
 
@@ -21,7 +20,7 @@ class TwitchAuth {
   }
 
   async loadTwitchCredentials() {
-    const { clientID, clientSecret, token } = this.credentials;
+    const { clientID, token } = this.credentials;
 
     this.twitchCredentials = await TwitchCredentials.withCredentials(
       clientID,
