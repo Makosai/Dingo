@@ -1,6 +1,7 @@
 import commandsConfig from './cmds.config';
 import { Message } from 'discord.js';
 import streams from './streams/streams.main';
+import { toParams } from '@utils/discord.utils';
 
 const { config } = commandsConfig;
 
@@ -13,9 +14,7 @@ async function handleCommand(msg: Message) {
   let params: string[] = [];
 
   if (msg.content.includes(' ')) {
-    params = String.prototype.toParams(
-      msg.content.substring(tempVal + 1, msg.content.length)
-    );
+    params = toParams(msg.content.substring(tempVal + 1, msg.content.length));
   }
 
   switch (command) {
