@@ -28,6 +28,8 @@ class TwitchStreams {
   }
 
   async addUser(user: HelixUser) {
+    this.users.push(user);
+
     return db
       .collection('twitch')
       .doc('streams')
