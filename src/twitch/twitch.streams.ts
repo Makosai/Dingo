@@ -127,6 +127,9 @@ class TwitchStreams {
     const url = `https://twitch.tv/${user.name}`;
     const message = `**${user.displayName}** is now live!`;
 
+    console.log('user: ', user);
+    console.log('stream: ', stream);
+
     if (stream === null) {
       throw new LocalError(
         `Failed to broadcast ${user.name}'s stream. Stream is null.`
@@ -135,25 +138,19 @@ class TwitchStreams {
 
     const game = await stream.getGame();
 
-    if (game === null) {
-      throw new LocalError(
-        `Failed to broadcast ${user.name}'s stream. Game is null.`
-      );
-    }
-
     let embed = new RichEmbed();
 
     // Author
     embed = embed.setAuthor(user.displayName, user.profilePictureUrl, url);
 
     // Game & Viewers
-    embed = embed.addField('Game', game.name, true);
+    embed = embed.addField('Game', game !== null ? game.name : '???', true);
     embed = embed.addField('Viewers', stream.viewers, true);
 
     embed = embed.setColor('6441A4');
     embed = embed.setTitle(`${stream.title}`);
     embed = embed.setURL(url);
-    embed = embed.setImage(stream.thumbnailUrl);
+    embed = embed.setImage(game !== null ? game.boxArtUrl : stream.thumbnailUrl);
 
     return { message, embed };
   }
