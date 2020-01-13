@@ -5,6 +5,7 @@ import TwitchAuth from './twitch.auth';
 import TwitchWebhooks from './twitch.webhooks';
 import { client } from '@discord/discord.main';
 import { TextChannel, RichEmbed } from 'discord.js';
+import { debug } from '@utils/essentials.utils';
 
 interface ITwitchStreamsData {
   users: HelixUser[];
@@ -127,8 +128,8 @@ class TwitchStreams {
     const url = `https://twitch.tv/${user.name}`;
     const message = `**${user.displayName}** is now live!`;
 
-    console.log('user: ', user);
-    console.log('stream: ', stream);
+    debug('user: ' + user, true);
+    debug('stream: ' + stream, true);
 
     if (stream === null) {
       throw new LocalError(
@@ -150,7 +151,9 @@ class TwitchStreams {
     embed = embed.setColor('6441A4');
     embed = embed.setTitle(`${stream.title}`);
     embed = embed.setURL(url);
-    embed = embed.setImage(game !== null ? game.boxArtUrl : stream.thumbnailUrl);
+    embed = embed.setImage(
+      game !== null ? game.boxArtUrl : stream.thumbnailUrl
+    );
 
     return { message, embed };
   }
