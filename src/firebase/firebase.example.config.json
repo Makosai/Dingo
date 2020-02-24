@@ -12,4 +12,5 @@
 }
 
 /* Remove .example from this file's name */
+/* Remove these comments to prevent errors */
 /* https://console.firebase.google.com/project/_/settings/serviceaccounts/adminsdk - Get your key here */
