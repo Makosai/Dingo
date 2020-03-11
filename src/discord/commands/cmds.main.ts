@@ -1,5 +1,6 @@
 import commandsConfig from './cmds.config';
 import { Message } from 'discord.js';
+import roles from './roles/roles.main';
 import streams from './streams/streams.main';
 import { toParams } from '@utils/discord.utils';
 
@@ -28,6 +29,10 @@ async function handleCommand(msg: Message) {
   }
 
   switch (command) {
+    case 'role':
+      roles.handler(msg, params[0], params?.slice(1));
+      return;
+
     case 'streams':
       streams.handler(msg, params[0], params?.slice(1));
       return;
