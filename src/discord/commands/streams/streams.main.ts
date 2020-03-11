@@ -22,7 +22,25 @@ class Streams {
    * @param params Params, if any, that go with the cmd.
    */
   handler(msg: Message, cmd: string, params?: string[]) {
+    if (!msg.member.permissions.has('ADMINISTRATOR')) {
+      msg.channel.send(`You don't have permission to use that command.`);
+      return;
+    }
+
     switch (cmd) {
+      case 'help':
+        msg.channel.send(
+          `\`\`\`ini
+[Streams Command Documentation]
+register = Registers a Discord channel to be used.
+unregister = Removes a Discord channel from the list.
+registered = Lists all registered Discord channels.
+add <username> = Adds a Twitch username to the list of registered streams.
+removed <username> = Removes that Twitch username.
+list = Lists all registered streams.\`\`\``
+        );
+        return;
+
       case 'list':
         msg.channel.send(this.getStreams());
         return;
