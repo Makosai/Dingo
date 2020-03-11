@@ -30,26 +30,26 @@
     "@utils": "./lib/utils"
   },
   "dependencies": {
-    "discord.js": "^11.5.1",
-    "firebase-admin": "^8.9.0",
+    "discord.js": "^12.0.2",
+    "firebase-admin": "^8.9.2",
     "forever": "^2.0.0",
     "glob": "^7.1.6",
     "is-absolute-url": "^3.0.3",
     "module-alias": "^2.2.2",
     "parse-link-header": "^1.0.1",
     "request-promise": "^4.2.5",
-    "twitch": "^3.5.6",
-    "twitch-chat-client": "^3.6.0",
-    "twitch-webhooks": "^3.5.6"
+    "twitch": "^4.0.6",
+    "twitch-chat-client": "^4.0.6",
+    "twitch-webhooks": "^4.0.6"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/parse-link-header": "^1.0.0",
     "@types/request-promise": "^4.1.45",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "nodemon": "^2.0.2",
-    "ts-jest": "^24.2.0",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.4"
+    "ts-jest": "^25.2.1",
+    "tslint": "^6.0.0",
+    "typescript": "^3.8.3"
   }
 }
