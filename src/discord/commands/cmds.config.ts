@@ -24,6 +24,16 @@ class CommandsConfig {
       name: 'help',
       description: 'Display this help dialogue.',
       roles: []
+    },
+    {
+      name: 'music',
+      description: 'Allows you to play music! (WIP)',
+      roles: []
+    },
+    {
+      name: 'role',
+      description: 'Gives you whatever role you request.',
+      roles: []
     }
   ];
 
