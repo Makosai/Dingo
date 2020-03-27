@@ -22,6 +22,10 @@ async function handleCommand(msg: Message) {
     case 'help':
       msg.channel.send(await commandsConfig.getCommands());
       return;
+
+    case 'roles':
+      roles.handler(msg, 'list');
+      return;
   }
 
   if (params.length == 0) {

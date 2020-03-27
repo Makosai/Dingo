@@ -59,6 +59,14 @@ class Roles {
     let roleName: string;
 
     switch (cmd) {
+      case 'list':
+        const rolesList = this.settings.roles.map(elem => elem.name).sort().join('\n');
+        msg.channel.send(`\`\`\`ini
+[Roles]
+${rolesList}
+\`\`\``);
+        return;
+
       case 'set':
         // Verify that the user provided a role.
         if (params === undefined || params.length <= 0) {
@@ -146,17 +154,21 @@ class Roles {
           channel.send(
             `${roleName} doesn't seem to exist. Maybe it was removed?`
           );
-          
+
           return;
         }
 
         if (msg.member.roles.has(role.id)) {
           msg.member.removeRole(role).then(() => {
-            channel.send(`Removed ${roleName} from you, ${msg.author.toString()}.`);
+            channel.send(
+              `Removed ${roleName} from you, ${msg.author.toString()}.`
+            );
           });
         } else {
           msg.member.addRole(role).then(() => {
-            channel.send(`I have given you the ${roleName}, ${msg.author.toString()}.`);
+            channel.send(
+              `I have given you the ${roleName}, ${msg.author.toString()}.`
+            );
           });
         }
 
