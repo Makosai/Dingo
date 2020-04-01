@@ -126,10 +126,13 @@ class TwitchStreams {
 
   static async broadcast(user: HelixUser, stream: HelixStream) {
     const url = `https://twitch.tv/${user.name}`;
-    const message = `**${user.displayName}** is now live!`;
-
-    debug('user: ' + user, true);
-    debug('stream: ' + stream, true);
+    let message;
+    
+    if(user.name === 'makosai') {
+      message = `Hey, <@&694774892792643664> **${user.displayName}** is now live!`;
+    } else {
+      message = `**${user.displayName}** is now live!`;
+    }
 
     if (stream === null) {
       throw new LocalError(
