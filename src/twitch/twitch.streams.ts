@@ -127,8 +127,9 @@ class TwitchStreams {
   static async broadcast(user: HelixUser, stream: HelixStream) {
     const url = `https://twitch.tv/${user.name}`;
     let message;
-    
-    if(user.name === 'makosai') {
+
+    // TODO: Make this changeable.
+    if (user.name === 'makosai') {
       message = `Hey, <@&694774892792643664> **${user.displayName}** is now live!`;
     } else {
       message = `**${user.displayName}** is now live!`;
