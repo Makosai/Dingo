@@ -5,7 +5,6 @@ import TwitchAuth from './twitch.auth';
 import TwitchWebhooks from './twitch.webhooks';
 import { client } from '@discord/discord.main';
 import { TextChannel, RichEmbed } from 'discord.js';
-import { debug } from '@utils/essentials.utils';
 
 interface ITwitchStreamsData {
   users: HelixUser[];
