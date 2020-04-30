@@ -2,7 +2,7 @@
   "rules": {
     // Do not allow any imports for modules that are not in package.json. These will almost certainly fail when
     // deployed.
-    "no-implicit-dependencies": [true, ["@discord", "@firebase", "@twitch", "@utils"]], // UPDATE - Change this line whenever a new path is added to tsconfig.json
+    "no-implicit-dependencies": [true, ["@discord", "@firebase", "@twitch", "@utils", "@express"]], // UPDATE - Change this line whenever a new path is added to tsconfig.json
 
     // -- Strict errors --
     // These lint rules are likely always a good idea.
