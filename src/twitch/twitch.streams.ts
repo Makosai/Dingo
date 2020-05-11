@@ -6,6 +6,8 @@ import TwitchWebhooks from './twitch.webhooks';
 import { client } from '@discord/discord.main';
 import { TextChannel, RichEmbed } from 'discord.js';
 import TwitchPubSub from './twitch.pubsub';
+import { debug } from '@utils/essentials.utils';
+import TwitchData from './twitch.data';
 
 interface ITwitchStreamsData {
   users: HelixUser[];
@@ -20,7 +22,7 @@ interface IFundsData {
 class TwitchStreams {
   users!: HelixUser[];
   channels!: string[];
-  funds!: { [key: string]: IFundsData };
+  funds: { [key: string]: IFundsData } = {};
   sync: Promise<any>;
 
   constructor() {
@@ -28,7 +30,13 @@ class TwitchStreams {
   }
 
   async loadStreams() {
+    /**
+     * Twitch HelixUsers.
+     */
     const users: HelixUser[] = [];
+    /**
+     * Discord Channel IDs.
+     */
     const channels: string[] = [];
 
     const data: ITwitchStreamsData = { users, channels };
@@ -42,7 +50,7 @@ class TwitchStreams {
 
     this.channels = res.channels;
 
-    this.channels.forEach(async (channel) => {
+    TwitchData.data.channels.forEach(async (channel) => {
       this.funds[channel] = await loadData(`twitch/data/${channel}`, 'funds', {
         watching: false,
         value: 0
@@ -144,18 +152,36 @@ class TwitchStreams {
       );
     }
 
-    TwitchPubSub.subscriptions.set(user.id, {
-      subscription: await TwitchPubSub.pubsub.onSubscription(user.id, (res) => {
-        if (this.funds[user.id] !== undefined && this.funds[user.id].watching) {
-          this.addFundsValue(user.id, 4.99);
-        }
-      }),
-      bits: await TwitchPubSub.pubsub.onBits(user.id, (res) => {
-        if (this.funds[user.id] !== undefined && this.funds[user.id].watching) {
-          this.addFundsValue(user.id, res.bits * (1.4 / 100));
-        }
-      })
-    });
+    if (TwitchData.data.channels.includes(user.name)) {
+      debug(`${user.name}(${user.id})`, true);
+
+      TwitchPubSub.subscriptions.set(user.id, {
+        subscription: await TwitchPubSub.pubsub
+          .getUserListener(user.id)
+          .onSubscription((res) => {
+            debug(res, true);
+
+            if (
+              this.funds[user.name] !== undefined &&
+              this.funds[user.name].watching
+            ) {
+              this.addFundsValue(user.name, 4.99);
+            }
+          }),
+        bits: await TwitchPubSub.pubsub
+          .getUserListener(user.id)
+          .onBits((res) => {
+            debug(res, true);
+
+            if (
+              this.funds[user.name] !== undefined &&
+              this.funds[user.name].watching
+            ) {
+              this.addFundsValue(user.name, res.bits * (1.4 / 100));
+            }
+          })
+      });
+    }
   }
 
   async unsubscribe(user: string) {
