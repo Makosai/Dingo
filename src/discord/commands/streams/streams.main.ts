@@ -140,8 +140,6 @@ ${parsedChannels}\`\`\``
 
     await TwitchStreams.addUser(userData);
 
-    await TwitchStreams.subscribe(userData);
-
     return userData;
   }
 
