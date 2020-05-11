@@ -11,9 +11,15 @@ interface ITwitchStreamsData {
   channels: string[];
 }
 
+interface IFundsData {
+  watching: boolean;
+  value: number;
+}
+
 class TwitchStreams {
   users!: HelixUser[];
   channels!: string[];
+  funds!: { [key: string]: IFundsData };
   sync: Promise<any>;
 
   constructor() {
@@ -34,12 +40,54 @@ class TwitchStreams {
     );
 
     this.channels = res.channels;
+
+    this.channels.forEach(async (channel) => {
+      this.funds[channel] = await loadData(`twitch/data/${channel}`, 'funds', {
+        watching: false,
+        value: 0
+      });
+    });
+  }
+
+  /**
+   * Toggles watching for a channel's funds.
+   * @param channel
+   */
+  async toggleFunds(channel: string) {
+    if (this.funds[channel] === undefined) {
+      throw new Error(
+        `Can't toggle the funds on a channel that doesn't exist.`
+      );
+    }
+
+    await updateDB(`twitch/data/${channel}`, 'funds', {
+      watching: !this.funds[channel].watching
+    });
+  }
+
+  /**
+   * Adds (or subtracts with a negative number) a number to the funds value for a channel.
+   * @param channel
+   * @param value
+   */
+  async addFundsValue(channel: string, value: number) {
+    if (this.funds[channel] === undefined) {
+      throw new Error(
+        `Can't update the funds value on a channel that doesn't exist.`
+      );
+    }
+
+    await updateDB(`twitch/data/${channel}`, 'funds', {
+      value: this.funds[channel].value + value
+    });
   }
 
   async addUser(user: HelixUser) {
     this.users.push(user);
 
-    return updateDB('twitch', 'streams', { users: this.users }).catch(err => {
+    this.subscribe(user);
+
+    return updateDB('twitch', 'streams', { users: this.users }).catch((err) => {
       throw new LocalError(
         'Failed to add a user to the TwitchStreams.\n\n' + user
       );
@@ -57,7 +105,9 @@ class TwitchStreams {
 
     this.users.splice(foundUser, 1);
 
-    return updateDB('twitch', 'streams', { users: this.users }).catch(err => {
+    this.unsubscribe(user.id);
+
+    return updateDB('twitch', 'streams', { users: this.users }).catch((err) => {
       throw new LocalError(
         'Failed to remove a user from the TwitchStreams.\n\n' + user
       );
@@ -65,18 +115,26 @@ class TwitchStreams {
   }
 
   async subscribe(user: HelixUser) {
+    if (
+      TwitchWebhooks.subscriptions.has(user.id) &&
+      TwitchWebhooks.subscriptions.get(user.id) !== undefined
+    ) {
+      TwitchWebhooks.subscriptions.get(user.id)?.start();
+      return;
+    }
+
     TwitchWebhooks.subscriptions.set(
       user.id,
       await TwitchWebhooks.webhook.subscribeToStreamChanges(
         user.id,
-        async stream => {
+        async (stream) => {
           if (stream !== undefined) {
             const { message, embed } = await TwitchStreams.broadcast(
               user,
               stream
             );
 
-            this.channels.forEach(id => {
+            this.channels.forEach((id) => {
               const channel = client.channels.get(id) as TextChannel;
 
               channel.send(message, { embed });
@@ -85,6 +143,16 @@ class TwitchStreams {
         }
       )
     );
+  }
+
+  async unsubscribe(user: string) {
+    if (!TwitchWebhooks.subscriptions.has(user)) {
+      return false;
+    }
+
+    await TwitchWebhooks.subscriptions.get(user)?.stop();
+
+    return true;
   }
 
   async addChannel(id: string) {
@@ -97,7 +165,7 @@ class TwitchStreams {
     this.channels.push(id);
 
     return updateDB('twitch', 'streams', { channels: this.channels }).catch(
-      err => {
+      (err) => {
         throw new LocalError(
           'Failed to remove a user from the TwitchStreams.\n\n' + id
         );
@@ -115,7 +183,7 @@ class TwitchStreams {
     this.channels.splice(this.channels.indexOf(id), 1);
 
     return updateDB('twitch', 'streams', { channels: this.channels }).catch(
-      err => {
+      (err) => {
         throw new LocalError(
           'Failed to remove a channel from the TwitchStreams.\n\n' + id
         );
