@@ -5,6 +5,7 @@ import TwitchAuth from './twitch.auth';
 import TwitchWebhooks from './twitch.webhooks';
 import { client } from '@discord/discord.main';
 import { TextChannel, RichEmbed } from 'discord.js';
+import TwitchPubSub from './twitch.pubsub';
 
 interface ITwitchStreamsData {
   users: HelixUser[];
@@ -120,37 +121,52 @@ class TwitchStreams {
       TwitchWebhooks.subscriptions.get(user.id) !== undefined
     ) {
       TwitchWebhooks.subscriptions.get(user.id)?.start();
-      return;
+    } else {
+      TwitchWebhooks.subscriptions.set(
+        user.id,
+        await TwitchWebhooks.webhook.subscribeToStreamChanges(
+          user.id,
+          async (stream) => {
+            if (stream !== undefined) {
+              const { message, embed } = await TwitchStreams.broadcast(
+                user,
+                stream
+              );
+
+              this.channels.forEach((id) => {
+                const channel = client.channels.get(id) as TextChannel;
+
+                channel.send(message, { embed });
+              });
+            }
+          }
+        )
+      );
     }
 
-    TwitchWebhooks.subscriptions.set(
-      user.id,
-      await TwitchWebhooks.webhook.subscribeToStreamChanges(
-        user.id,
-        async (stream) => {
-          if (stream !== undefined) {
-            const { message, embed } = await TwitchStreams.broadcast(
-              user,
-              stream
-            );
-
-            this.channels.forEach((id) => {
-              const channel = client.channels.get(id) as TextChannel;
-
-              channel.send(message, { embed });
-            });
-          }
+    TwitchPubSub.subscriptions.set(user.id, {
+      subscription: await TwitchPubSub.pubsub.onSubscription(user.id, (res) => {
+        if (this.funds[user.id] !== undefined && this.funds[user.id].watching) {
+          this.addFundsValue(user.id, 4.99);
         }
-      )
-    );
+      }),
+      bits: await TwitchPubSub.pubsub.onBits(user.id, (res) => {
+        if (this.funds[user.id] !== undefined && this.funds[user.id].watching) {
+          this.addFundsValue(user.id, res.bits * (1.4 / 100));
+        }
+      })
+    });
   }
 
   async unsubscribe(user: string) {
-    if (!TwitchWebhooks.subscriptions.has(user)) {
-      return false;
+    if (TwitchWebhooks.subscriptions.has(user)) {
+      await TwitchWebhooks.subscriptions.get(user)?.stop();
     }
 
-    await TwitchWebhooks.subscriptions.get(user)?.stop();
+    if (TwitchPubSub.subscriptions.has(user)) {
+      TwitchPubSub.subscriptions.get(user)?.subscription.remove();
+      TwitchPubSub.subscriptions.get(user)?.bits.remove();
+    }
 
     return true;
   }
