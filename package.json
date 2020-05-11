@@ -42,6 +42,7 @@
     "request-promise": "^4.2.5",
     "twitch": "^4.0.7",
     "twitch-chat-client": "^4.0.7",
+    "twitch-pubsub-client": "^4.0.9",
     "twitch-webhooks": "^4.0.7"
   },
   "devDependencies": {
