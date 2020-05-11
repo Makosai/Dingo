@@ -63,9 +63,20 @@ TwitchClient.client.onMessage('PRIVMSG', (message) => {
     case 'funds':
       if (params.length <= 0) {
         // Handle default
+        TwitchClient.client.say(
+          msg.channel,
+          `We have currently raised $${TwitchStreams.funds[msg.channel].value / 100}`
+        );
       }
 
       switch (params[0]) {
+        case 'all':
+          TwitchClient.client.say(
+            msg.channel,
+            `This command would show all historical funding entries but isn't implemnented.`
+          );
+          break;
+
         case 'watch':
           const isWatching = TwitchStreams.funds[msg.channel].watching;
 

@@ -86,8 +86,10 @@ class TwitchStreams {
       );
     }
 
+    this.funds[channel].value += value;
+
     await updateDB(`twitch/data/${channel}`, 'funds', {
-      value: this.funds[channel].value + value
+      value: this.funds[channel].value
     });
   }
 
@@ -165,7 +167,29 @@ class TwitchStreams {
               this.funds[user.name] !== undefined &&
               this.funds[user.name].watching
             ) {
-              this.addFundsValue(user.name, 4.99);
+              let subPrice;
+
+              switch (res.subPlan) {
+                case 'Prime':
+                  subPrice = 4.99;
+                  break;
+
+                case '1000':
+                  subPrice = 4.99;
+                  break;
+
+                case '2000':
+                  subPrice = 9.99;
+                  break;
+
+                case '3000':
+                  subPrice = 24.99;
+                  break;
+
+                default:
+                  return;
+              }
+              this.addFundsValue(user.name, (subPrice / 2) * 100);
             }
           }),
         bits: await TwitchPubSub.pubsub
@@ -177,7 +201,7 @@ class TwitchStreams {
               this.funds[user.name] !== undefined &&
               this.funds[user.name].watching
             ) {
-              this.addFundsValue(user.name, res.bits * (1.4 / 100));
+              this.addFundsValue(user.name, res.bits);
             }
           })
       });

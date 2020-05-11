@@ -4,6 +4,8 @@ import express from 'express';
 
 import api from '../../api.main';
 import { funds } from '../v1.main'; // API endpoint
+import TwitchData from '@twitch/twitch.data';
+import TwitchStreams from '@twitch/twitch.streams';
 
 export const router = express.Router();
 api.use(funds, router);
@@ -17,12 +19,12 @@ router.get('/:username?', async (req, res) => {
       throw new Error(`No user provided.`);
     }
 
-    const userExists = true; // TODO: Check if data for the user exists.
+    const userExists = TwitchData.data.channels.includes(username.toLowerCase()); // TODO: Check if data for the user exists.
     if (!userExists) {
       throw new Error(`User doesn't exist.`);
     }
 
-    res.json({ username });
+    res.json(TwitchStreams.funds[username.toLowerCase()].value);
   } catch (error) {
     handleApiError(res, error);
   }
