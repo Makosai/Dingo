@@ -1,7 +1,5 @@
 import React from 'react';
 
-import './App.scss';
-
 import { Switch } from 'react-router-dom';
 import RootRoutes from './components/routes/Root.Route';
 import Routes from './components/routes/Routes';

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import { withRoute } from 'components/contexts/AppContexts';
-
 export default function Routes({ routes }: IRoutes) {
   const defaults = {
     hideNav: false
@@ -50,18 +48,13 @@ export default function Routes({ routes }: IRoutes) {
   }
 
   const reducedRoutes = reduceRoutes(routes).map((route: IRoute) => {
-    const component = withRoute(
-      (props: JSX.IntrinsicAttributes) => <route.component {...props} />,
-      route
-    );
-
     if (route.path !== null) {
       return (
-        <Route key={route.name} exact path={route.path} component={component} />
+        <Route key={route.name} exact path={route.path} component={route.component} />
       );
     }
 
-    return (<Route key={route.name} component={component} />); // 404 Not Found.
+    return (<Route key={route.name} component={route.component} />); // 404 Not Found.
   })
 
   return <>{reducedRoutes}</>;
