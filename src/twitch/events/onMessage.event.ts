@@ -69,6 +69,8 @@ TwitchClient.client.onMessage('PRIVMSG', (message) => {
         );
       }
 
+      let value;
+
       switch (params[0]) {
         case 'all':
           TwitchClient.client.say(
@@ -76,6 +78,37 @@ TwitchClient.client.onMessage('PRIVMSG', (message) => {
             `This command would show all historical funding entries but isn't implemnented.`
           );
           break;
+
+        case 'add':
+          value = Number(params[1]);
+
+          if(isNaN(value)) {
+            break;
+          }
+
+          value = value * 100;
+
+          TwitchStreams.addFundsValue(msg.channel, value);
+          TwitchClient.client.say(
+            msg.channel,
+            `${Number(value / 100).toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            })} has been added to the funds.`
+          );
+          break;
+
+        case 'reset':
+          value = -TwitchStreams.funds[msg.channel].value;
+
+          TwitchStreams.addFundsValue(msg.channel, value);
+          TwitchClient.client.say(
+            msg.channel,
+            `${Number(value / 100).toLocaleString('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            })} has been cleared from the funds.`
+          );
 
         case 'watch':
           const isWatching = TwitchStreams.funds[msg.channel].watching;
