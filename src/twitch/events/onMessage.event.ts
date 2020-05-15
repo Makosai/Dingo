@@ -19,7 +19,7 @@ const commands: Map<string, ITwitchCommandInfo> = new Map([
   [
     'funds',
     {
-      options: ['watch', 'all']
+      options: ['all', 'add', 'reset', 'watch']
     }
   ]
 ]);
@@ -51,7 +51,7 @@ TwitchClient.client.onMessage('PRIVMSG', (message) => {
       const response = [];
 
       for (const [key, value] of commands.entries()) {
-        response.push(`${key} [${value.options.join('|')}]`);
+        response.push(`${key} [${value.options.sort().join(' | ')}]`);
       }
 
       TwitchClient.client.say(
