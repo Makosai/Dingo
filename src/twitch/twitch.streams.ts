@@ -161,7 +161,7 @@ class TwitchStreams {
         subscription: await TwitchPubSub.pubsub
           .getUserListener(user.id)
           .onSubscription((res) => {
-            debug(res, true);
+            debug(JSON.stringify(res), true);
 
             if (
               this.funds[user.name] !== undefined &&
@@ -195,7 +195,7 @@ class TwitchStreams {
         bits: await TwitchPubSub.pubsub
           .getUserListener(user.id)
           .onBits((res) => {
-            debug(res, true);
+            debug(JSON.stringify(res), true);
 
             if (
               this.funds[user.name] !== undefined &&
