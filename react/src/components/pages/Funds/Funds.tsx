@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // scss imports
-import './scss/makosai.funds.scss';
-import './scss/tireddadgames.funds.scss';
+import './scss/funds.scss';
 import { apiFetch } from '@components/../utils/global_variables';
 
 export default function Funds(props: any) {
@@ -12,6 +11,12 @@ export default function Funds(props: any) {
 
   const name = searchParams.get('name');
   const goal = searchParams.get('goal');
+  let scroll = searchParams.get('scroll');
+
+  if(scroll !== null && !['left', 'right', 'custom'].includes(scroll)) {
+    console.log(scroll);
+    scroll = null;
+  }
 
   const [funds, setFunds] = useState(0);
 
@@ -35,27 +40,45 @@ export default function Funds(props: any) {
     }, 10000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [username]);
+
+  function getName() {
+    if(name !== null) {
+      return <span className="text">{`${name}: `}</span>;
+    }
+    
+    return `We have currently raised `;
+  }
+
+  function getFunds() {
+    const formattedFunds = Number(funds).toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+
+    if(goal !==  null) {
+      const formattedGoal = Number(goal).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      });
+
+      return `(${formattedFunds}/${formattedGoal})`;
+    }
+
+    return formattedFunds;
+  }
+
+  function getScroll(funds: JSX.Element) {
+    if(scroll !== null) {
+      return <span className={`scroll ${scroll}`}>{funds}</span>
+    }
+
+    return funds;
+  }
 
   return (
-    <div id={username}>
-      <span className="text">
-        {name !== null ? `${name}: ` : `We have currently raised `}
-      </span>
-      <span className="funds">
-        {goal !== null && `(`}
-        {`${Number(funds).toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        })}`}
-        {goal !== null && `/`}
-        {goal !== null &&
-          Number(goal).toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          })}
-        {goal !== null && `)`}
-      </span>
+    <div id={username} className="funding">
+      {getScroll(<>{getName()}{getFunds()}</>)}
     </div>
   );
 }

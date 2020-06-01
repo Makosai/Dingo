@@ -1,0 +1,108 @@
+.funding {
+
+  position: relative;
+  .scroll {
+    position: absolute;
+    &.left {
+      -moz-transform: translateX(100%);
+      -webkit-transform: translateX(100%);
+      transform: translateX(100%);
+      /* Apply animation to this element */
+      -moz-animation: scroll-left 5s linear infinite;
+      -webkit-animation: scroll-left 5s linear infinite;
+      animation: scroll-left 5s linear infinite;
+    }
+    &.right {
+      -moz-transform: translateX(0%);
+      -webkit-transform: translateX(0%);
+      transform: translateX(-100%);
+      /* Apply animation to this element */
+      -moz-animation: scroll-right 5s linear infinite;
+      -webkit-animation: scroll-right 5s linear infinite;
+      animation: scroll-right 5s linear infinite;
+    }
+  }
+}
+
+/* Move it (define the animation) */
+@-moz-keyframes scroll-left {
+  0% {
+    -moz-transform: translateX(100%);
+  }
+  100% {
+    -moz-transform: translateX(-100%);
+  }
+}
+@-webkit-keyframes scroll-left {
+  0% {
+    -webkit-transform: translateX(100%);
+  }
+  100% {
+    -webkit-transform: translateX(-100%);
+  }
+}
+@keyframes scroll-left {
+  0% {
+    -moz-transform: translateX(100%); /* Firefox bug fix */
+    -webkit-transform: translateX(100%); /* Firefox bug fix */
+    transform: translateX(100%);
+  }
+  100% {
+    -moz-transform: translateX(-100%); /* Firefox bug fix */
+    -webkit-transform: translateX(-100%); /* Firefox bug fix */
+    transform: translateX(-100%);
+  }
+}
+
+
+@-moz-keyframes scroll-right {
+  0% {
+    -moz-transform: translateX(-100%);
+  }
+  100% {
+    -moz-transform: translateX(100%);
+  }
+}
+@-webkit-keyframes scroll-right {
+  0% {
+    -webkit-transform: translateX(-100%);
+  }
+  100% {
+    -webkit-transform: translateX(100%);
+  }
+}
+@keyframes scroll-right {
+  0% {
+    -moz-transform: translateX(-100%); /* Firefox bug fix */
+    -webkit-transform: translateX(-100%); /* Firefox bug fix */
+    transform: translateX(-100%);
+  }
+  100% {
+    -moz-transform: translateX(100%); /* Firefox bug fix */
+    -webkit-transform: translateX(100%); /* Firefox bug fix */
+    transform: translateX(100%);
+  }
+}
+
+
+/*
+/* CUSTOM SCROLL CSS */
+/* This is just an example for your convenience */
+
+/* Scrolls from left (-100%) to right (100%) *\/
+.funding .scroll.custom {
+  transform: translateX(-100%); /* New starting position, the initial starting position will always be 0% though *\/
+  animation-duration: 5s;
+}
+
+/* Moves the text from -100% to 100% from its initial starting position. *\/
+/* You can play with the values here to get a desired result. *\/
+@keyframes custom-scroll {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+*/
