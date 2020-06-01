@@ -92,7 +92,7 @@
 /* Scrolls from left (-100%) to right (100%) *\/
 .funding .scroll.custom {
   transform: translateX(-100%); /* New starting position, the initial starting position will always be 0% though *\/
-  animation-duration: 5s;
+  animation: scroll-custom 5s linear infinite;
 }
 
 /* Moves the text from -100% to 100% from its initial starting position. *\/
