@@ -1,5 +1,6 @@
 import { client } from './discord.main';
 import { loadCredentials, ICredentials } from '@utils/firebase.utils';
+import { debug } from '@utils/essentials.utils';
 
 interface IDiscordCredentials extends ICredentials {}
 
@@ -13,7 +14,7 @@ class DiscordAuth {
   async loadCredentials() {
     this.credentials = await loadCredentials('discord');
 
-    client.login(this.credentials.token);
+    client.login(this.credentials.token).catch(e => debug(e, true));
   }
 }
 

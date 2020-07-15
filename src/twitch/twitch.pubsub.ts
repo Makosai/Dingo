@@ -6,6 +6,7 @@ import TwitchAuth from './twitch.auth';
 import { loadData } from '@utils/firebase.utils';
 import TwitchData from './twitch.data';
 import TwitchCredentials from 'twitch';
+import { debug } from '@utils/essentials.utils';
 
 interface IPubSubTypes {
   subscription: PubSubListener;
@@ -55,7 +56,7 @@ class TwitchPubSub {
         ['channel_subscriptions', 'bits:read']
       );
 
-      await this.pubsub.registerUserListener(twitchClient, user);
+      await this.pubsub.registerUserListener(twitchClient, user).catch(e => debug(e));
     });
   }
 }
