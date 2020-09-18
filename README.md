@@ -25,3 +25,12 @@ Cloud Firestore requires the following:
 > https://id.twitch.tv/oauth2/authorize?client_id=CLIENT_ID&redirect_uri=https%3A%2F%2Ftwitchapps.com%2Ftokengen%2F&response_type=token&scope=channel_subscriptions+bits%3Aread
 
 > Replace CLIENT_ID in the link above and use the response token.
+
+
+Known issues:
+If the bot went down for whatever reason, tokens can be released. An easy way to figure out which token is causing the problem is to do the following
+- Count how many unhandled errors there are and compare the similar ones with your data (i.e. Watching 2 usernames in twitch.data.channels and you see 2 unhandled promises, chances are it's those tokens).
+- Another example is if you don't see "Logged in as BotName#Number" then your Discord token needs to be fixed.
+- And finally you can replace the bot's chat token if they don't appear in any Twitch channels.
+
+In the future, these will eventually print out errors if they're caught and give proper feedback for them to be fixed easier.
