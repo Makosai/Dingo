@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "start": "forever -c \"nodemon --exitcrash\" lib/index.js",
+    "start": "forever -c \"nodemon --exitcrash --trace-warnings\" lib/index.js",
     "serve": "forever lib/index.js",
     "test": "jest"
   },
