@@ -18,9 +18,45 @@ router.get('/id', async (req, res) => {
   }
 });
 
+router.post('/callback', async (req, res) => {
+  try {
+    console.log('body2', req.body);
+
+    res.json({ body: req.body });
+  } catch (error) {
+    handleApiError(res, error);
+  }
+});
+
 router.post('/authorize', async (req, res) => {
   try {
-    TwitchAuth.credentials.clientID;
+    const { clientID, clientSecret } = TwitchAuth.credentials;
+    const { code } = req.body;
+    console.log('body', req.body);
+
+    const params = new URLSearchParams();
+    params.append('client_id', clientID);
+    params.append('client_secret', clientSecret);
+    params.append('code', code);
+    params.append('grant_type', 'authorization_code');
+    params.append(
+      'redirect_uri',
+      'http://dingo.makosai.com/api/v1/twitch/callback'
+    ); // TODO: Change to something that can be edited via the database.
+
+    fetch('https://id.twitch.tv/oauth2/token', {
+      method: 'POST',
+      body: params
+    })
+      .then((auth) => {
+        if (!auth.ok) {
+          throw new Error(auth.statusText);
+        }
+        return auth.json();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (error) {
     handleApiError(res, error);
   }
