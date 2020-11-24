@@ -18,4 +18,5 @@ RUN yarn install
 RUN yarn build
 
 EXPOSE 2241
+EXPOSE 2351
 CMD ["yarn", "start"]
