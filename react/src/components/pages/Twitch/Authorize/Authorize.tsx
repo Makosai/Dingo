@@ -9,7 +9,8 @@ export default function Authorize() {
     setClientID(res);
   });
   const [clientID, setClientID] = useState('');
-  const baseUrl = `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${clientID}&redirect_uri=http://dingo.makosai.com/callback&scope=`; // Replace with a URL from database @express directory /v1/site/url.
+  const callbackUri = 'http://dingo.makosai.com:2351/callback'; // Replace with a URL from database @express directory /v1/site/url.
+  const baseUrl = `https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=${clientID}&redirect_uri=${callbackUri}&scope=`;
   const botUrl = `${baseUrl}${botScopes}`;
   const userUrl = `${baseUrl}${userScopes}`;
 

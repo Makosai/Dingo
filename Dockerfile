@@ -15,6 +15,7 @@ COPY ./react ./react
 
 # Install packages and build
 RUN yarn install
+RUN cd react; yarn install; yarn build
 RUN yarn build
 
 EXPOSE 2241
