@@ -1,11 +1,16 @@
-import PubSubClient, {
+import {
+  PubSubClient,
   PubSubListener,
   SingleUserPubSubClient
 } from 'twitch-pubsub-client';
 import TwitchAuth from './twitch.auth';
 import { loadData } from '@utils/firebase.utils';
 import TwitchData from './twitch.data';
-import TwitchCredentials from 'twitch';
+import {
+  ApiClient as TwitchCredentials,
+  RefreshableAuthProvider,
+  StaticAuthProvider
+} from 'twitch';
 import { debug } from '@utils/essentials.utils';
 
 interface IPubSubTypes {
@@ -50,13 +55,30 @@ class TwitchPubSub {
         );
       }
 
-      const twitchClient = await TwitchCredentials.withCredentials(
-        TwitchAuth.credentials.clientID,
-        data.token,
-        ['channel_subscriptions', 'bits:read']
-      );
+      const { clientID, clientSecret } = TwitchAuth.credentials;
+      const { token, refreshToken } = data;
 
-      await this.pubsub.registerUserListener(twitchClient, user).catch(e => debug(e));
+      const twitchClient = new TwitchCredentials({
+        authProvider: new RefreshableAuthProvider(
+          new StaticAuthProvider(
+            clientID,
+            token,
+            ['channel_subscriptions', 'bits:read'],
+            'user'
+          ),
+          {
+            clientSecret,
+            refreshToken,
+            onRefresh: (newToken) => {
+              // do things with the new token data, e.g. save them in your database
+            }
+          }
+        )
+      });
+
+      await this.pubsub
+        .registerUserListener(twitchClient, user)
+        .catch((e) => debug(e));
     });
   }
 }

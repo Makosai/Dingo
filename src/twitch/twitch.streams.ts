@@ -53,7 +53,7 @@ class TwitchStreams {
     TwitchData.data.channels.forEach(async (channel) => {
       this.funds[channel] = await loadData(`twitch/data/${channel}`, 'funds', {
         watching: false,
-        value: 0
+        value: 0,
       });
     });
   }
@@ -70,7 +70,7 @@ class TwitchStreams {
     }
 
     await updateDB(`twitch/data/${channel}`, 'funds', {
-      watching: !this.funds[channel].watching
+      watching: !this.funds[channel].watching,
     });
   }
 
@@ -89,14 +89,18 @@ class TwitchStreams {
     this.funds[channel].value += value;
 
     await updateDB(`twitch/data/${channel}`, 'funds', {
-      value: this.funds[channel].value
+      value: this.funds[channel].value,
     });
   }
 
   async addUser(user: HelixUser) {
     this.users.push(user);
 
-    this.subscribe(user);
+    this.subscribe(user).catch(
+      (err) => {
+        debug('twitch.streams (err #tsSub1)');
+      }
+    );
 
     return updateDB('twitch', 'streams', { users: this.users }).catch((err) => {
       throw new LocalError(
@@ -116,7 +120,11 @@ class TwitchStreams {
 
     this.users.splice(foundUser, 1);
 
-    this.unsubscribe(user.id);
+    this.unsubscribe(user.id).catch(
+      (err) => {
+        debug('twitch.streams (err #tsUnsub1)');
+      }
+    );;
 
     return updateDB('twitch', 'streams', { users: this.users }).catch((err) => {
       throw new LocalError(
@@ -146,7 +154,9 @@ class TwitchStreams {
               this.channels.forEach((id) => {
                 const channel = client.channels.get(id) as TextChannel;
 
-                channel.send(message, { embed });
+                channel.send(message, { embed }).catch((err) => {
+                  debug('twitch.streams: Webhooks Sub Msg failed.');
+                });
               });
             }
           }
@@ -189,7 +199,11 @@ class TwitchStreams {
                 default:
                   return;
               }
-              this.addFundsValue(user.name, (subPrice / 2) * 100);
+              this.addFundsValue(user.name, (subPrice / 2) * 100).catch(
+                (err) => {
+                  debug('twitch.streams (err #tsAFV1)');
+                }
+              );
             }
           }),
         bits: await TwitchPubSub.pubsub
@@ -201,9 +215,11 @@ class TwitchStreams {
               this.funds[user.name] !== undefined &&
               this.funds[user.name].watching
             ) {
-              this.addFundsValue(user.name, res.bits);
+              this.addFundsValue(user.name, res.bits).catch((err) => {
+                debug('twitch.streams (err #tsAFV2)');
+              });
             }
-          })
+          }),
       });
     }
   }

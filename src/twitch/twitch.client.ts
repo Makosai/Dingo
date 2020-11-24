@@ -1,4 +1,4 @@
-import ChatClient from 'twitch-chat-client';
+import { ChatClient } from 'twitch-chat-client';
 import TwitchAuth from './twitch.auth';
 
 class TwitchClient {
@@ -11,7 +11,7 @@ class TwitchClient {
   }
 
   private async loadClient() {
-    this.client = await ChatClient.forTwitchClient(
+    this.client = new ChatClient(
       TwitchAuth.twitchCredentials
     );
   }

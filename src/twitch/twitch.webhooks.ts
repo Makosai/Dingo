@@ -1,9 +1,12 @@
-import Webhooks, { StreamChangeSubscription } from 'twitch-webhooks';
+import { SimpleAdapter, Subscription, WebHookListener as Webhooks } from 'twitch-webhooks';
 import TwitchAuth from './twitch.auth';
 
 class TwitchWebHooks {
   webhook!: Webhooks;
-  subscriptions: Map<string, StreamChangeSubscription> = new Map<string, StreamChangeSubscription>();
+  subscriptions: Map<string, Subscription> = new Map<
+    string,
+    Subscription
+  >();
   sync: Promise<any>;
 
   constructor() {
@@ -11,8 +14,14 @@ class TwitchWebHooks {
   }
 
   private async loadWebhook() {
-    this.webhook = await Webhooks.create(TwitchAuth.twitchCredentials, { port: 2241 });
-    this.webhook.listen();
+    this.webhook = new Webhooks(
+      TwitchAuth.twitchCredentials,
+      new SimpleAdapter({
+        hostName: 'dingo.makosai.com',
+        listenerPort: 2241,
+      })
+    );
+    await this.webhook.listen();
   }
 }
 
