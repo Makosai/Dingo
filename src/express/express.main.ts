@@ -1,7 +1,6 @@
 // Firebase and Express imports
 import path from 'path';
 import express from 'express';
-import bodyParser from 'body-parser';
 import http from 'http';
 
 // API initialization
@@ -13,6 +12,9 @@ import { debug } from '@utils/essentials.utils';
 
 const main = express(); // The glue that puts it all together!
 
+main.use(express.json());
+main.use(express.urlencoded({ extended: true }));
+
 // Load the react web pages first.
 main.use(express.static(path.join(process.cwd(), 'react/build')));
 
@@ -23,7 +25,6 @@ main.get('/api/v', (req, res) => {
 
 // Set the rules and location for the root entrypoint
 main.use(config.root, api);
-main.use(bodyParser.json());
 
 main.get('/*', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'react/build/index.html'));

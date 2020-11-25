@@ -5,6 +5,7 @@ import express from 'express';
 import api from '../../api.main';
 import { twitch } from '../v1.main'; // API endpoint
 import TwitchAuth from '@twitch/twitch.auth';
+import fetch from 'node-fetch';
 
 export const router = express.Router();
 api.use(twitch, router);
@@ -20,7 +21,7 @@ router.get('/id', async (req, res) => {
 
 router.post('/callback', async (req, res) => {
   try {
-    console.log('body2', req.body);
+    console.log('test', req.body);
 
     res.json({ body: req.body });
   } catch (error) {
@@ -31,8 +32,12 @@ router.post('/callback', async (req, res) => {
 router.post('/authorize', async (req, res) => {
   try {
     const { clientID, clientSecret } = TwitchAuth.credentials;
+    if (req.body === undefined) {
+      res.status(422).json('Missing auth code.');
+      return;
+    }
+
     const { code } = req.body;
-    console.log('body', req.body);
 
     const params = new URLSearchParams();
     params.append('client_id', clientID);
@@ -41,21 +46,25 @@ router.post('/authorize', async (req, res) => {
     params.append('grant_type', 'authorization_code');
     params.append(
       'redirect_uri',
-      'http://dingo.makosai.com/api/v1/twitch/callback'
+      'http://dingo.makosai.com:2351/api/v1/twitch/callback'
     ); // TODO: Change to something that can be edited via the database.
 
     fetch('https://id.twitch.tv/oauth2/token', {
       method: 'POST',
-      body: params
+      body: params,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     })
       .then((auth) => {
         if (!auth.ok) {
           throw new Error(auth.statusText);
         }
-        return auth.json();
+
+        res.json(auth.json());
       })
       .catch((err) => {
-        console.log(err);
+        throw err;
       });
   } catch (error) {
     handleApiError(res, error);

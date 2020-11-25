@@ -1,7 +1,9 @@
 # Dingo
+
 A Discord/Twitch bot.
 
 # Credentials Setup
+
 Cloud Firestore requires the following:
 
 `discord > credentials > [clientID, clientSecret, token]`
@@ -11,12 +13,14 @@ Cloud Firestore requires the following:
 > https://discord.com/developers/applications/ID/bot -> Token
 
 `twitch > config > [callback]`
+
 > This is the IP or domain linking to the server the bot is hosted on.
 
 `twitch > credentials > [clientId, clientSecret, token]`
+
 > https://dev.twitch.tv/console/apps/ID -> Client ID & Client Secret
 
-> https://twitchapps.com/tokengen/ -> Token -- Requires the `chat:read chat:edit` scopes.  (https://dev.twitch.tv/docs/authentication#scopes)
+> https://twitchapps.com/tokengen/ -> Token -- Requires the `chat:read chat:edit` scopes. (https://dev.twitch.tv/docs/authentication#scopes)
 
 (Partially optional) `twitch > data > USERNAME > credentials`
 
@@ -26,9 +30,9 @@ Cloud Firestore requires the following:
 
 > Replace CLIENT_ID in the link above and use the response token.
 
-
 Known issues:
 If the bot went down for whatever reason, tokens can be released. An easy way to figure out which token is causing the problem is to do the following
+
 - Count how many unhandled errors there are and compare the similar ones with your data (i.e. Watching 2 usernames in twitch.data.channels and you see 2 unhandled promises, chances are it's those tokens).
 - Another example is if you don't see "Logged in as BotName#Number" then your Discord token needs to be fixed.
 - And finally you can replace the bot's chat token if they don't appear in any Twitch channels.

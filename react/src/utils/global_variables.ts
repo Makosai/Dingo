@@ -11,12 +11,23 @@ export async function apiFetch<T>(url: string): Promise<T> {
 
 export async function apiPost<T>(
   url: string,
-  body: string | FormData | URLSearchParams
+  body: string | FormData | URLSearchParams,
+  headers = {
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+  }
 ): Promise<T> {
-  return fetch(`${API_URL}/${url}`, { method: 'POST', body }).then((res) => {
-    if (!res.ok) {
-      throw new Error(res.statusText);
+  if (typeof body === 'string') {
+    const params = new URLSearchParams();
+    params.append('code', body);
+    body = params;
+  }
+
+  return fetch(`${API_URL}/${url}`, { method: 'POST', body, headers }).then(
+    (res) => {
+      if (!res.ok) {
+        throw new Error(res.statusText);
+      }
+      return res.json();
     }
-    return res.json();
-  });
+  );
 }
