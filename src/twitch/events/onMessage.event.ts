@@ -29,6 +29,9 @@ TwitchClient.client.onMessage(async (channel, user, message, msg) => {
     params = toParams(message.substring(tempVal + 1, message.length));
   }
 
+  // tslint:disable-next-line: no-parameter-reassignment
+  const channelName = channel.substr(1);
+
   switch (command) {
     case 'commands':
       const response = [];
@@ -49,7 +52,7 @@ TwitchClient.client.onMessage(async (channel, user, message, msg) => {
         TwitchClient.client.say(
           channel,
           `We have currently raised $${
-            TwitchStreams.funds[channel].value / 100
+            TwitchStreams.funds[channelName].value / 100
           }`
         );
       }
@@ -73,7 +76,7 @@ TwitchClient.client.onMessage(async (channel, user, message, msg) => {
 
           value = value * 100;
 
-          await TwitchStreams.addFundsValue(channel, value);
+          await TwitchStreams.addFundsValue(channelName, value);
           TwitchClient.client.say(
             channel,
             `${Number(value / 100).toLocaleString('en-US', {
@@ -84,9 +87,9 @@ TwitchClient.client.onMessage(async (channel, user, message, msg) => {
           break;
 
         case 'reset':
-          value = -TwitchStreams.funds[channel].value;
+          value = -TwitchStreams.funds[channelName].value;
 
-          await TwitchStreams.addFundsValue(channel, value);
+          await TwitchStreams.addFundsValue(channelName, value);
           TwitchClient.client.say(
             channel,
             `${Number(value / 100).toLocaleString('en-US', {
@@ -96,10 +99,10 @@ TwitchClient.client.onMessage(async (channel, user, message, msg) => {
           );
 
         case 'watch':
-          const isWatching = TwitchStreams.funds[channel].watching;
+          const isWatching = TwitchStreams.funds[channelName].watching;
 
           try {
-            await TwitchStreams.toggleFunds(channel);
+            await TwitchStreams.toggleFunds(channelName);
 
             TwitchClient.client.say(
               channel,

@@ -53,7 +53,7 @@ class TwitchStreams {
     TwitchData.data.channels.forEach(async (channel) => {
       this.funds[channel] = await loadData(`twitch/data/${channel}`, 'funds', {
         watching: false,
-        value: 0,
+        value: 0
       });
     });
   }
@@ -70,7 +70,7 @@ class TwitchStreams {
     }
 
     await updateDB(`twitch/data/${channel}`, 'funds', {
-      watching: !this.funds[channel].watching,
+      watching: !this.funds[channel].watching
     });
   }
 
@@ -89,18 +89,16 @@ class TwitchStreams {
     this.funds[channel].value += value;
 
     await updateDB(`twitch/data/${channel}`, 'funds', {
-      value: this.funds[channel].value,
+      value: this.funds[channel].value
     });
   }
 
   async addUser(user: HelixUser) {
     this.users.push(user);
 
-    this.subscribe(user).catch(
-      (err) => {
-        debug('twitch.streams (err #tsSub1)');
-      }
-    );
+    this.subscribe(user).catch((err) => {
+      debug('twitch.streams (err #tsSub1)');
+    });
 
     return updateDB('twitch', 'streams', { users: this.users }).catch((err) => {
       throw new LocalError(
@@ -120,11 +118,9 @@ class TwitchStreams {
 
     this.users.splice(foundUser, 1);
 
-    this.unsubscribe(user.id).catch(
-      (err) => {
-        debug('twitch.streams (err #tsUnsub1)');
-      }
-    );;
+    this.unsubscribe(user.id).catch((err) => {
+      debug('twitch.streams (err #tsUnsub1)');
+    });
 
     return updateDB('twitch', 'streams', { users: this.users }).catch((err) => {
       throw new LocalError(
@@ -219,7 +215,7 @@ class TwitchStreams {
                 debug('twitch.streams (err #tsAFV2)');
               });
             }
-          }),
+          })
       });
     }
   }
