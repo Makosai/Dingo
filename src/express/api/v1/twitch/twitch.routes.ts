@@ -49,19 +49,18 @@ router.post('/authorize', async (req, res) => {
       'http://dingo.makosai.com:2351/api/v1/twitch/callback'
     ); // TODO: Change to something that can be edited via the database.
 
-    fetch('https://id.twitch.tv/oauth2/token', {
+    await fetch(`https://id.twitch.tv/oauth2/token`, {
       method: 'POST',
-      body: params,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      body: params
     })
-      .then((auth) => {
+      .then(async (auth) => {
+        const authJson = await auth.json();
+
         if (!auth.ok) {
-          throw new Error(auth.statusText);
+          throw new Error(JSON.stringify(authJson));
         }
 
-        res.json(auth.json());
+        res.json(authJson);
       })
       .catch((err) => {
         throw err;
