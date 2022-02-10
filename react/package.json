@@ -35,7 +35,7 @@
     "@types/react-router-dom": "^5.1.6",
     "@types/react-test-renderer": "^17.0.0",
     "craco-alias": "^2.1.1",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "react-scripts": "^4.0.1",
     "react-test-renderer": "^17.0.1",
     "tslint-react": "^5.0.0"
