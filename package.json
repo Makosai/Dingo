@@ -38,7 +38,7 @@
     "glob": "^7.1.6",
     "is-absolute-url": "^3.0.3",
     "module-alias": "^2.2.2",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "parse-link-header": "^1.0.1",
     "request-promise": "^4.2.6",
     "twitch": "^4.3.0",
