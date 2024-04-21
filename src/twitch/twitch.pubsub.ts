@@ -34,52 +34,52 @@ class TwitchPubSub {
   private async loadPubSub() {
     this.pubsub = new PubSubClient();
 
-    TwitchData.data.channels.forEach(async (channel) => {
+    for (const channel of TwitchData.data.channels) {
       const user = await TwitchAuth.twitchCredentials.helix.users.getUserByName(
-        channel
+      channel
       );
 
       if (user === null) {
-        throw new Error(
-          `Couldn't find ${channel} on Twitch to load twitch/data/${channel}.`
-        );
+      throw new Error(
+        `Couldn't find ${channel} on Twitch to load twitch/data/${channel}.`
+      );
       }
 
       const data = await loadData(`twitch/data/${channel}`, 'credentials', {
-        token: ''
+      token: ''
       });
 
       if (data.token === '') {
-        throw new Error(
-          `Please set a token for twitch/data/${channel}/credentials.`
-        );
+      throw new Error(
+        `Please set a token for twitch/data/${channel}/credentials.`
+      );
       }
 
       const { clientID, clientSecret } = TwitchAuth.credentials;
       const { token, refreshToken } = data;
 
       const twitchClient = new TwitchCredentials({
-        authProvider: new RefreshableAuthProvider(
-          new StaticAuthProvider(
-            clientID,
-            token,
-            ['channel_subscriptions', 'bits:read'],
-            'user'
-          ),
-          {
-            clientSecret,
-            refreshToken,
-            onRefresh: (newToken) => {
-              // do things with the new token data, e.g. save them in your database
-            }
-          }
-        )
+      authProvider: new RefreshableAuthProvider(
+        new StaticAuthProvider(
+        clientID,
+        token,
+        ['channel_subscriptions', 'bits:read'],
+        'user'
+        ),
+        {
+        clientSecret,
+        refreshToken,
+        onRefresh: (newToken) => {
+          // do things with the new token data, e.g. save them in your database
+        }
+        }
+      )
       });
 
       await this.pubsub
-        .registerUserListener(twitchClient, user)
-        .catch((e) => debug(e));
-    });
+      .registerUserListener(twitchClient, user)
+      .catch((e) => debug(e));
+    }
   }
 }
 

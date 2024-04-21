@@ -1,5 +1,5 @@
 import TwitchClient from '@twitch/twitch.client';
-// import TwitchSettings from '@twitch/twitch.settings';
+// Can be used later: import TwitchSettings from '@twitch/twitch.settings';
 import { toParams } from '@utils/discord.utils';
 import TwitchStreams from '@twitch/twitch.streams';
 import { debug } from '@utils/essentials.utils';
@@ -12,9 +12,9 @@ const commands: Map<string, ITwitchCommandInfo> = new Map([
   [
     'funds',
     {
-      options: ['all', 'add', 'reset', 'watch'],
-    },
-  ],
+      options: ['all', 'add', 'reset', 'watch']
+    }
+  ]
 ]);
 
 TwitchClient.client.onMessage(async (channel, user, message, msg) => {
@@ -34,10 +34,10 @@ TwitchClient.client.onMessage(async (channel, user, message, msg) => {
 
   switch (command) {
     case 'commands':
-      const response = [];
-
       for (const [key, value] of commands.entries()) {
-        response.push(`${key} [${value.options.sort().join(' | ')}]`);
+        response.push(
+          `${key} [${[...value.options].sort((a, b) => a - b).join(' | ')}]`
+        );
       }
 
       TwitchClient.client.say(
@@ -47,73 +47,77 @@ TwitchClient.client.onMessage(async (channel, user, message, msg) => {
       break;
 
     case 'funds':
-      if (params.length <= 0) {
-        // Handle default
-        TwitchClient.client.say(
-          channel,
-          `We have currently raised $${
-            TwitchStreams.funds[channelName].value / 100
-          }`
-        );
-      }
-
-      let value;
-
-      switch (params[0]) {
-        case 'all':
+      {
+        if (params.length <= 0) {
+          // Handle default
           TwitchClient.client.say(
             channel,
-            `This command would show all historical funding entries but isn't implemnented.`
+            `We have currently raised $${
+              TwitchStreams.funds[channelName].value / 100
+            }`
           );
-          break;
+        }
 
-        case 'add':
-          value = Number(params[1]);
+        let value;
 
-          if (isNaN(value)) {
-            break;
-          }
-
-          value = value * 100;
-
-          await TwitchStreams.addFundsValue(channelName, value);
-          TwitchClient.client.say(
-            channel,
-            `${Number(value / 100).toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            })} has been added to the funds.`
-          );
-          break;
-
-        case 'reset':
-          value = -TwitchStreams.funds[channelName].value;
-
-          await TwitchStreams.addFundsValue(channelName, value);
-          TwitchClient.client.say(
-            channel,
-            `${Number(value / 100).toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            })} has been cleared from the funds.`
-          );
-
-        case 'watch':
-          const isWatching = TwitchStreams.funds[channelName].watching;
-
-          try {
-            await TwitchStreams.toggleFunds(channelName);
-
+        switch (params[0]) {
+          case 'all':
             TwitchClient.client.say(
               channel,
-              isWatching
-                ? `Alright, I've put my watching on pause.`
-                : `Yes, chief. I'm now watching for funds.`
+              `This command would show all historical funding entries but isn't implemnented.`
             );
-          } catch (e) {
-            debug(e);
+            break;
+
+          case 'add':
+            value = Number(params[1]);
+
+            if (isNaN(value)) {
+              break;
+            }
+
+            value = value * 100;
+
+            await TwitchStreams.addFundsValue(channelName, value);
+            TwitchClient.client.say(
+              channel,
+              `${Number(value / 100).toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              })} has been added to the funds.`
+            );
+            break;
+
+          case 'reset':
+            value = -TwitchStreams.funds[channelName].value;
+
+            await TwitchStreams.addFundsValue(channelName, value);
+            TwitchClient.client.say(
+              channel,
+              `${Number(value / 100).toLocaleString('en-US', {
+                style: 'currency',
+                currency: 'USD'
+              })} has been cleared from the funds.`
+            );
+            break;
+
+          case 'watch': {
+            const isWatching = TwitchStreams.funds[channelName].watching;
+
+            try {
+              await TwitchStreams.toggleFunds(channelName);
+
+              TwitchClient.client.say(
+                channel,
+                isWatching
+                  ? `Alright, I've put my watching on pause.`
+                  : `Yes, chief. I'm now watching for funds.`
+              );
+            } catch (e) {
+              debug(e);
+            }
+            break;
           }
-          break;
+        }
       }
       break;
   }

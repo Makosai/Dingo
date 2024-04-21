@@ -50,12 +50,12 @@ class TwitchStreams {
 
     this.channels = res.channels;
 
-    TwitchData.data.channels.forEach(async (channel) => {
+    for (const channel of TwitchData.data.channels) {
       this.funds[channel] = await loadData(`twitch/data/${channel}`, 'funds', {
         watching: false,
         value: 0
       });
-    });
+    }
   }
 
   /**
