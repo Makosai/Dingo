@@ -47,7 +47,7 @@ router.post('/authorize', async (req, res) => {
     params.append(
       'redirect_uri',
       'http://dingo.makosai.com:2351/api/v1/twitch/callback'
-    ); // TODO: Change to something that can be edited via the database.
+    ); // NOTE: Change to something that can be edited via the database.
 
     await fetch(`https://id.twitch.tv/oauth2/token`, {
       method: 'POST',

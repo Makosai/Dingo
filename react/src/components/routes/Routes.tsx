@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-export default function Routes({ routes }: IRoutes) {
+export default function Routes({ routes }: Readonly<IRoutes>) {
   const defaults = {
     hideNav: false
   };

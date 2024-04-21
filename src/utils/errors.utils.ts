@@ -11,10 +11,10 @@ export class LocalError extends BaseError {
    */
   constructor(error: string | Error) {
     if (error instanceof Error) {
-      super('\x1b[31m' + error.message + '\x1b[37m');
+      super('\x1b[31m [LOCAL]' + error.message + '\x1b[37m');
       this.stack = error.stack;
     } else {
-      super('\x1b[31m' + error + '\x1b[37m');
+      super('\x1b[31m [LOCAL]' + error + '\x1b[37m');
       Error.captureStackTrace(this);
     }
   }
@@ -28,10 +28,10 @@ export class InitError extends BaseError {
    */
   constructor(error: string | Error) {
     if (error instanceof Error) {
-      super('\x1b[31m' + error.message + '\x1b[37m');
+      super('\x1b[31m [INIT]' + error.message + '\x1b[37m');
       this.stack = error.stack;
     } else {
-      super('\x1b[31m' + error + '\x1b[37m');
+      super('\x1b[31m [INIT]' + error + '\x1b[37m');
       Error.captureStackTrace(this);
     }
   }

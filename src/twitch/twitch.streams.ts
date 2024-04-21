@@ -273,7 +273,7 @@ class TwitchStreams {
     const url = `https://twitch.tv/${user.name}`;
     let message;
 
-    // TODO: Make this changeable.
+    // NOTE: Make this changeable.
     if (user.name === 'makosai') {
       message = `Hey, <@&694774892792643664> **${user.displayName}** is now live!`;
     } else {

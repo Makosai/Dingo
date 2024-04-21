@@ -11,7 +11,7 @@ class Streams {
   }
 
   async loadStreams() {
-    TwitchStreams.users.forEach(user => {
+    TwitchStreams.users.forEach((user) => {
       TwitchStreams.subscribe(user);
     });
   }
@@ -78,25 +78,28 @@ list = Lists all registered streams.\`\`\``
         return;
 
       case 'registered':
-        const parsedChannels =
-          TwitchStreams.channels
-            .map(channel => {
-              const foundChannel = client.channels.get(channel) as TextChannel;
+        {
+          const parsedChannels =
+            TwitchStreams.channels
+              .map((channel) => {
+                const foundChannel = client.channels.get(
+                  channel
+                ) as TextChannel;
 
-              return `# ${foundChannel.name}`;
-            })
-            .join('\n') || `# I'm not registered to any channels.`;
+                return `# ${foundChannel.name}`;
+              })
+              .join('\n') || `# I'm not registered to any channels.`;
 
-        msg.author
-          .send(
-            `\`\`\`ini
+          msg.author
+            .send(
+              `\`\`\`ini
 [Registration]
 
 ${parsedChannels}\`\`\``
-          )
-          .then(() => msg.delete())
-          .catch(() => msg.delete());
-
+            )
+            .then(() => msg.delete())
+            .catch(() => msg.delete());
+        }
         return;
     }
 
@@ -106,13 +109,13 @@ ${parsedChannels}\`\`\``
 
     switch (cmd) {
       case 'add':
-        this.addStream(params.join(' ')).then(user =>
+        this.addStream(params.join(' ')).then((user) =>
           msg.channel.send(`Added ${user.displayName} to the stream list.`)
         );
         return;
 
       case 'remove':
-        this.removeStream(params.join(' ')).then(user =>
+        this.removeStream(params.join(' ')).then((user) =>
           msg.channel.send(`Removed ${user.displayName} from the stream list.`)
         );
         return;
@@ -122,7 +125,7 @@ ${parsedChannels}\`\`\``
   private async addStream(user: string) {
     if (
       TwitchStreams.users.find(
-        userData => userData.name.toLowerCase() === user.toLowerCase()
+        (userData) => userData.name.toLowerCase() === user.toLowerCase()
       ) !== undefined
     ) {
       throw new LocalError(
@@ -130,9 +133,8 @@ ${parsedChannels}\`\`\``
       );
     }
 
-    const userData = await twitchAuth.twitchCredentials.helix.users.getUserByName(
-      user
-    );
+    const userData =
+      await twitchAuth.twitchCredentials.helix.users.getUserByName(user);
 
     if (!userData) {
       throw new LocalError(`Failed to add ${user} to the streams list.`);
@@ -147,7 +149,7 @@ ${parsedChannels}\`\`\``
     const users =
       TwitchStreams.users.length <= 0
         ? '# The streams list is empty.'
-        : TwitchStreams.users.map(user => `# ${user.displayName}`).join('\n');
+        : TwitchStreams.users.map((user) => `# ${user.displayName}`).join('\n');
 
     return `\`\`\`ini
 [Streams]
@@ -157,7 +159,7 @@ ${users}\`\`\``;
 
   private async removeStream(user: string) {
     const foundUser = TwitchStreams.users.find(
-      userData => userData.name.toLowerCase() === user.toLowerCase()
+      (userData) => userData.name.toLowerCase() === user.toLowerCase()
     );
 
     if (foundUser === undefined) {

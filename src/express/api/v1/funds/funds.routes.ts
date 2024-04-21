@@ -19,7 +19,7 @@ router.get('/:username?', async (req, res) => {
       throw new Error(`No user provided.`);
     }
 
-    const userExists = TwitchData.data.channels.includes(username.toLowerCase()); // TODO: Check if data for the user exists.
+    const userExists = TwitchData.data.channels.includes(username.toLowerCase()); // NOTE: Check if data for the user exists.
     if (!userExists) {
       throw new Error(`User doesn't exist.`);
     }
